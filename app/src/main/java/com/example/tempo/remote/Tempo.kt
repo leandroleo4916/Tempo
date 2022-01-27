@@ -2,25 +2,35 @@ package com.example.tempo.remote
 
 import com.google.gson.annotations.SerializedName
 
-data class Tempo (
-    val tempo: Date
+data class Welcome (
+    @SerializedName("2702108")
+    val the2702108: The2702108
 )
 
-data class Date (
-    val hoje: Turno,
-    val amanha: Turno,
-    val data3: Info,
-    val data4: Info,
-    val data5: Info
+data class The2702108 (
+    @SerializedName("27/01/2022")
+    val the27012022: The012022,
+
+    @SerializedName("28/01/2022")
+    val the28012022: The012022,
+
+    @SerializedName("29/01/2022")
+    val the29012022: The29012022,
+
+    @SerializedName("30/01/2022")
+    val the30012022: The29012022,
+
+    @SerializedName("31/01/2022")
+    val the31012022: The29012022
 )
 
-data class Turno (
-    val manha: Info,
-    val tarde: Info,
-    val noite: Info
+data class The012022 (
+    val manha: The29012022,
+    val tarde: The29012022,
+    val noite: The29012022
 )
 
-data class Info (
+data class The29012022 (
     val uf: String,
     val entidade: String,
     val resumo: String,
@@ -76,4 +86,3 @@ data class Info (
     val ocaso: String,
     val fonte: String
 )
-

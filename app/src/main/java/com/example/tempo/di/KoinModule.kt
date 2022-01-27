@@ -16,11 +16,9 @@ import org.koin.dsl.module
 import retrofit2.Retrofit
 import retrofit2.converter.gson.GsonConverterFactory
 
-private lateinit var retrofitClient: RetrofitClient
-
 val retrofitSearchModule = module {
 
-    val baseUrlSearch = "https://servicodados.ibge.gov.br/api/v1/"
+    val baseUrlSearch = "https://apiprevmet3.inmet.gov.br/previsao/"
     single<Retrofit> {
         Retrofit.Builder()
             .client(get())
@@ -35,11 +33,9 @@ val retrofitSearchModule = module {
             .addInterceptor(logging)
             .build()
     }
-    single<ApiServiceSearch> { get<Retrofit>().create(ApiServiceSearch::class.java) }
+    single<ApiServiceMain> { get<Retrofit>().create(ApiServiceMain::class.java) }
 }
 
-val test = module { single<ApiServiceMain> { get<Retrofit>().create(ApiServiceMain::class.java) } }
-val repositorySearchModule = module { single { RepositorySearch(get()) } }
 val repositoryMainModule = module { single { RepositoryMain(get()) } }
 val repositoryCidadesModule = module { single { RepositoryCidades(get()) } }
 val securityPreferencesModule = module { factory { SecurityPreferences(get()) } }
@@ -47,7 +43,6 @@ val viewModelModule = module { viewModel { MainViewModel(get()) } }
 val searchViewModelModule = module { viewModel { SearchViewModel(get()) } }
 
 val appModules = listOf(
-    retrofitSearchModule, repositorySearchModule,
-    searchViewModelModule, viewModelModule, repositoryMainModule,
-    repositoryCidadesModule, securityPreferencesModule, test
+    retrofitSearchModule, searchViewModelModule, viewModelModule, repositoryMainModule,
+    repositoryCidadesModule, securityPreferencesModule
 )

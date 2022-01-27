@@ -1,12 +1,12 @@
 package com.example.tempo.activity
 
 import android.content.Intent
-import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
+import androidx.appcompat.app.AppCompatActivity
 import com.example.tempo.activity.utils.ConstantsCidades
 import com.example.tempo.activity.utils.SecurityPreferences
 import com.example.tempo.databinding.ActivityMainBinding
-import com.example.tempo.remote.Tempo
+import com.example.tempo.remote.Welcome
 import com.example.tempo.repository.ResultadoMain
 import org.koin.android.ext.android.inject
 import org.koin.androidx.viewmodel.ext.android.viewModel
@@ -31,10 +31,10 @@ class MainActivity : AppCompatActivity() {
         else{ observer(bundle.toString()) }
     }
 
-    private fun verifyCidades(){
-        val id = securityPreferences.getStoredString(ConstantsCidades.CIDADES.ID)
-        if (id.isEmpty()) { openActivity() }
-        else { observer(id) }
+    private fun verifyCidades() {
+        val id = ""//securityPreferences.getStoredString(ConstantsCidades.CIDADES.ID)
+        if (id.isEmpty()) { observer("2702108") }
+        else { observer("2702108") }
     }
 
     private fun observer(id: String) {
@@ -43,7 +43,7 @@ class MainActivity : AppCompatActivity() {
                 when (result) {
                     is ResultadoMain.Success -> {
                         result.dado?.let { it ->
-                            setValue(it)
+                            //setValue(it)
                         }
                     }
                     is ResultadoMain.Error -> {
@@ -57,8 +57,8 @@ class MainActivity : AppCompatActivity() {
         })
     }
 
-    private fun setValue(tempo: Tempo){
-        val t = tempo.tempo
+    private fun setValue(tempo: Welcome){
+        val t = tempo.the2702108
     }
 
     private fun listener(){

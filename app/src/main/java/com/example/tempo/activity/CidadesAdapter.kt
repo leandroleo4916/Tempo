@@ -8,7 +8,6 @@ import android.widget.Filterable
 import android.widget.TextView
 import androidx.recyclerview.widget.RecyclerView
 import com.example.tempo.R
-import com.example.tempo.interfaces.INotification
 import com.example.tempo.interfaces.OnItemClickRecycler
 import com.example.tempo.remote.Cidades
 import java.util.*
@@ -51,8 +50,8 @@ class CidadesAdapter(private val listener: OnItemClickRecycler):
 
         override fun onClick(view: View?) {
             val position = adapterPosition
-            val id = data[position].id
-            val cidade = data[position].nome
+            val id = listCidades[position].id
+            val cidade = listCidades[position].nome
 
             when(view){ itemView -> listener.clickRecycler(id, cidade) }
         }

@@ -4,11 +4,11 @@ import okhttp3.OkHttpClient
 import retrofit2.Retrofit
 import retrofit2.converter.gson.GsonConverterFactory
 
-class RetrofitClient private constructor(){
+class RetrofitClient{
 
     companion object{
         private lateinit var retrofit: Retrofit
-        private const val baseUrl = "https://apiprevmet3.inmet.gov.br/previsao/"
+        private const val baseUrl = "https://servicodados.ibge.gov.br/api/v1/"
 
         private fun retrofitInstance(): Retrofit{
             val httpClient = OkHttpClient.Builder()
