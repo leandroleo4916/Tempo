@@ -1,4 +1,4 @@
-package com.example.tempo.activity
+package com.example.tempo.activity.search
 
 import androidx.lifecycle.ViewModel
 import com.example.tempo.repository.RepositorySearch

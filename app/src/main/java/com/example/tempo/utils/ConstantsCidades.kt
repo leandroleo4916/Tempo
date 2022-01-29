@@ -1,4 +1,4 @@
-package com.example.tempo.activity.utils
+package com.example.tempo.utils
 
 class ConstantsCidades private constructor() {
 

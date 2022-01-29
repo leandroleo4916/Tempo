@@ -1,7 +1,7 @@
 package com.example.tempo.repository
 
-import com.example.tempo.activity.utils.ConstantsCidades
-import com.example.tempo.activity.utils.SecurityPreferences
+import com.example.tempo.utils.ConstantsCidades
+import com.example.tempo.utils.SecurityPreferences
 
 class RepositoryCidades(private val securityPreferences: SecurityPreferences) {
 

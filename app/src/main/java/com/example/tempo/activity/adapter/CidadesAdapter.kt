@@ -1,4 +1,4 @@
-package com.example.tempo.activity
+package com.example.tempo.activity.adapter
 
 import android.view.LayoutInflater
 import android.view.View

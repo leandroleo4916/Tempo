@@ -28,3 +28,28 @@ class RetrofitClient{
     }
 
 }
+
+class RetrofitClientMain{
+
+    companion object{
+        private lateinit var retrofit: Retrofit
+        private const val baseUrl = "https://apiprevmet3.inmet.gov.br/previsao/"
+
+        private fun retrofitInstanceMain(): Retrofit{
+            val httpClient = OkHttpClient.Builder()
+            if(!::retrofit.isInitialized){
+                retrofit = Retrofit.Builder()
+                    .baseUrl(baseUrl)
+                    .client(httpClient.build())
+                    .addConverterFactory(GsonConverterFactory.create())
+                    .build()
+            }
+            return retrofit
+        }
+    }
+
+    fun<T> createService(service: Class<T>): T {
+        return retrofitInstanceMain().create(service)
+    }
+
+}

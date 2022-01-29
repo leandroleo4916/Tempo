@@ -1,4 +1,4 @@
-package com.example.tempo.activity
+package com.example.tempo.activity.search
 
 import android.content.Intent
 import android.os.Bundle
@@ -6,13 +6,15 @@ import android.text.Editable
 import android.text.TextWatcher
 import androidx.appcompat.app.AppCompatActivity
 import androidx.recyclerview.widget.LinearLayoutManager
-import com.example.tempo.activity.utils.ConstantsCidades
+import com.example.tempo.activity.adapter.CidadesAdapter
+import com.example.tempo.activity.main.MainActivity
 import com.example.tempo.databinding.ActivitySearchBinding
 import com.example.tempo.interfaces.OnItemClickRecycler
 import com.example.tempo.remote.ApiServiceSearch
 import com.example.tempo.remote.Cidades
 import com.example.tempo.remote.RetrofitClient
 import com.example.tempo.repository.RepositoryCidades
+import com.example.tempo.utils.ConstantsCidades
 import org.koin.android.ext.android.inject
 import retrofit2.Call
 import retrofit2.Callback

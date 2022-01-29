@@ -1,21 +1,24 @@
-package com.example.tempo.activity
+package com.example.tempo.activity.main
 
 import android.content.Intent
 import android.os.Bundle
 import androidx.appcompat.app.AppCompatActivity
-import com.example.tempo.activity.utils.ConstantsCidades
-import com.example.tempo.activity.utils.SecurityPreferences
+import com.example.tempo.activity.search.SearchActivity
+import com.example.tempo.utils.ConstantsCidades
+import com.example.tempo.utils.SecurityPreferences
 import com.example.tempo.databinding.ActivityMainBinding
-import com.example.tempo.remote.Welcome
-import com.example.tempo.repository.ResultadoMain
+import com.example.tempo.remote.ApiServiceMain
+import com.example.tempo.remote.Periodo
+import com.example.tempo.remote.RetrofitClientMain
 import org.koin.android.ext.android.inject
-import org.koin.androidx.viewmodel.ext.android.viewModel
+import retrofit2.Call
+import retrofit2.Callback
+import retrofit2.Response
 
 class MainActivity : AppCompatActivity() {
 
     private val binding by lazy { ActivityMainBinding.inflate(layoutInflater) }
     private val securityPreferences: SecurityPreferences by inject()
-    private val mainViewModel: MainViewModel by viewModel()
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -38,27 +41,21 @@ class MainActivity : AppCompatActivity() {
     }
 
     private fun observer(id: String) {
-        mainViewModel.getTempo(id).observe(this, {
-            it.let { result ->
-                when (result) {
-                    is ResultadoMain.Success -> {
-                        result.dado?.let { it ->
-                            //setValue(it)
-                        }
-                    }
-                    is ResultadoMain.Error -> {
 
-                    }
-                    is ResultadoMain.ErrorConnection -> {
+        val remote = RetrofitClientMain().createService(ApiServiceMain::class.java)
+        val call: Call<Map<String, Map<String, Periodo>>> = remote.tempo(id)
+        call.enqueue(object : Callback<Map<String, Map<String, Periodo>>> {
+            override fun onResponse(call: Call<Map<String, Map<String, Periodo>>>,
+                                    response: Response<Map<String, Map<String, Periodo>>>) {
+                val res = response.code()
+                val r = response.body()
 
-                    }
-                }
+            }
+
+            override fun onFailure(call: Call<Map<String, Map<String, Periodo>>>, t: Throwable) {
+                TODO("Not yet implemented")
             }
         })
-    }
-
-    private fun setValue(tempo: Welcome){
-        val t = tempo.the2702108
     }
 
     private fun listener(){

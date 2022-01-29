@@ -6,7 +6,7 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:background="@color/blue"
-    tools:context=".activity.SearchActivity">
+    tools:context=".activity.search.SearchActivity">
 
     <ImageView
         android:layout_width="26dp"
