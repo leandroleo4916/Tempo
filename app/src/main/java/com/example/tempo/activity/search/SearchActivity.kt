@@ -3,6 +3,7 @@ package com.example.tempo.activity.search
 import android.os.Bundle
 import android.text.Editable
 import android.text.TextWatcher
+import android.view.View
 import androidx.appcompat.app.AppCompatActivity
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.example.tempo.activity.adapter.CidadesAdapter
@@ -51,9 +52,7 @@ class SearchActivity : AppCompatActivity(), OnItemClickRecycler {
                 res.body()?.let { adapter.updateCidades(it) }
             }
 
-            override fun onFailure(call: Call<ArrayList<Cidades>>, t: Throwable) {
-                TODO("Not yet implemented")
-            }
+            override fun onFailure(call: Call<ArrayList<Cidades>>, t: Throwable) {  }
         })
 
     }
@@ -63,6 +62,7 @@ class SearchActivity : AppCompatActivity(), OnItemClickRecycler {
         binding.editTextSearch.addTextChangedListener(object : TextWatcher {
             override fun onTextChanged(s: CharSequence, start: Int, before: Int, count: Int) {
                 adapter.filter.filter(s.toString())
+                binding.buttomLocalizacao.visibility = View.INVISIBLE
             }
             override fun beforeTextChanged(s: CharSequence, start: Int, count: Int, after: Int) {}
             override fun afterTextChanged(s: Editable) {}

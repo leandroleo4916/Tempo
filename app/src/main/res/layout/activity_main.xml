@@ -8,6 +8,16 @@
     android:background="@color/blue"
     tools:context=".activity.main.MainActivity">
 
+    <ProgressBar
+        android:id="@+id/progress_main"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        app:layout_constraintBottom_toTopOf="@+id/toolbar_tempo_por_hora"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent"
+        tools:ignore="MissingConstraints" />
+
     <TextView
         android:id="@+id/textview_cidade"
         android:layout_width="wrap_content"
@@ -74,7 +84,7 @@
         tools:ignore="MissingConstraints" />
 
     <TextView
-        android:id="@+id/date_toolbar"
+        android:id="@+id/text_celsius"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:text="o"

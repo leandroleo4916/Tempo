@@ -36,30 +36,20 @@
         tools:ignore="MissingConstraints"
         android:autofillHints="" />
 
-    <Toolbar
-        android:id="@+id/toolbar_localizacao"
+    <Button
+        android:id="@+id/buttom_localizacao"
         android:layout_width="match_parent"
         android:layout_height="55dp"
         android:layout_marginTop="8dp"
         android:textSize="18sp"
+        android:backgroundTint="@color/black"
+        android:text="Adicione sua localização"
+        android:textColor="@color/white"
         android:layout_marginEnd="30dp"
         android:layout_marginStart="30dp"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/editText_search" />
-
-    <TextView
-        android:id="@+id/textView_localization"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:gravity="center"
-        android:text="Adicione sua localização"
-        android:textColor="@color/white"
-        android:textSize="22sp"
-        app:layout_constraintBottom_toBottomOf="@+id/toolbar_localizacao"
-        app:layout_constraintEnd_toEndOf="@+id/toolbar_localizacao"
-        app:layout_constraintStart_toStartOf="@+id/toolbar_localizacao"
-        app:layout_constraintTop_toTopOf="@+id/toolbar_localizacao" />
 
     <androidx.recyclerview.widget.RecyclerView
         android:id="@+id/recycler_cidades"

@@ -2,6 +2,7 @@ package com.example.tempo.activity.main
 
 import android.content.Intent
 import android.os.Bundle
+import android.view.View
 import androidx.appcompat.app.AppCompatActivity
 import com.example.tempo.activity.search.SearchActivity
 import com.example.tempo.databinding.ActivityMainBinding
@@ -28,12 +29,27 @@ class MainActivity : AppCompatActivity() {
         super.onCreate(savedInstanceState)
         setContentView(binding.root)
 
+        hideView()
         val id = securityPreferences.getStoredString(ConstantsCidades.CIDADES.ID)
 
         if (id.isEmpty()){ openActivity() }
         else{
             observer(id)
             listener()
+        }
+    }
+
+    private fun hideView(){
+        binding.run {
+            progressMain.visibility = View.VISIBLE
+            textviewCidade.visibility = View.INVISIBLE
+            textviewDate.visibility = View.INVISIBLE
+            textViewTemperatura.visibility = View.INVISIBLE
+            textCelsius.visibility = View.INVISIBLE
+            textviewCeu.visibility = View.INVISIBLE
+            textviewMaxmin.visibility = View.INVISIBLE
+            textviewTermica.visibility = View.INVISIBLE
+            imageTempo.visibility = View.INVISIBLE
         }
     }
 
@@ -77,6 +93,16 @@ class MainActivity : AppCompatActivity() {
             textviewTermica.text = manha?.estacao
             imageTempo.setImageBitmap(manha?.icone?.let {
                 converterPhoto.converterStringByBitmap(it) })
+
+            progressMain.visibility = View.GONE
+            textviewCidade.visibility = View.VISIBLE
+            textviewDate.visibility = View.VISIBLE
+            textViewTemperatura.visibility = View.VISIBLE
+            textCelsius.visibility = View.VISIBLE
+            textviewCeu.visibility = View.VISIBLE
+            textviewMaxmin.visibility = View.VISIBLE
+            textviewTermica.visibility = View.VISIBLE
+            imageTempo.visibility = View.VISIBLE
         }
     }
 
@@ -90,6 +116,7 @@ class MainActivity : AppCompatActivity() {
 
     override fun onRestart() {
         super.onRestart()
+        hideView()
         verifyCidades()
     }
 }
