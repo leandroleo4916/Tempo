@@ -48,16 +48,18 @@
         tools:ignore="MissingConstraints" />
 
     <ImageView
+        android:id="@+id/image_tempo"
         android:layout_width="60dp"
         android:layout_height="60dp"
         android:layout_marginTop="70dp"
         android:layout_marginEnd="40dp"
-        android:src="@drawable/sol"
+        android:src="@drawable/background"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintTop_toTopOf="parent" />
+        app:layout_constraintTop_toTopOf="parent"
+        tools:ignore="ContentDescription" />
 
     <TextView
-        android:id="@+id/next_tarefa"
+        android:id="@+id/textView_temperatura"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_marginStart="30dp"
@@ -79,8 +81,8 @@
         android:textAlignment="center"
         android:textColor="@color/white"
         android:textSize="40sp"
-        app:layout_constraintStart_toEndOf="@+id/next_tarefa"
-        app:layout_constraintTop_toTopOf="@+id/next_tarefa"
+        app:layout_constraintStart_toEndOf="@+id/textView_temperatura"
+        app:layout_constraintTop_toTopOf="@+id/textView_temperatura"
         tools:ignore="MissingConstraints" />
 
     <TextView
@@ -92,12 +94,12 @@
         android:textAlignment="center"
         android:textColor="@color/white"
         android:textSize="14sp"
-        app:layout_constraintBottom_toTopOf="@+id/textview_min"
+        app:layout_constraintBottom_toTopOf="@+id/textview_maxmin"
         app:layout_constraintEnd_toEndOf="parent"
         tools:ignore="MissingConstraints" />
 
     <TextView
-        android:id="@+id/textview_min"
+        android:id="@+id/textview_maxmin"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_marginEnd="40dp"
@@ -119,7 +121,7 @@
         android:textAlignment="center"
         android:textColor="@color/white"
         android:textSize="14sp"
-        app:layout_constraintBottom_toBottomOf="@+id/next_tarefa"
+        app:layout_constraintBottom_toBottomOf="@+id/textView_temperatura"
         app:layout_constraintEnd_toEndOf="parent"
         tools:ignore="MissingConstraints" />
 
@@ -133,7 +135,7 @@
         android:background="@color/transparent"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/next_tarefa" />
+        app:layout_constraintTop_toBottomOf="@+id/textView_temperatura" />
 
     <androidx.recyclerview.widget.RecyclerView
         android:id="@+id/recyclerView"
