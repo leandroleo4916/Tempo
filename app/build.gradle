@@ -65,5 +65,7 @@ dependencies {
     implementation "org.koin:koin-androidx-viewmodel:$koin_version"
 
     implementation 'com.google.android.gms:play-services-auth:20.0.1'
-    implementation("org.jetbrains.kotlinx:kotlinx-serialization-json:1.2.2")
+    implementation 'org.jetbrains.kotlinx:kotlinx-serialization-json:1.2.2'
+    implementation "org.jsoup:jsoup:1.10.2"
+
 }

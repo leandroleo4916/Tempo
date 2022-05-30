@@ -12,27 +12,27 @@ class CaptureDateCurrent {
     private val hora = SimpleDateFormat("HH:mm", local)
     private val horaSecond = SimpleDateFormat("HH:mm:ss", local)
 
-    fun captureDateCurrent(): String{
+    fun captureDateCurrent(): String {
         val calendar = Calendar.getInstance().time
         return dateString.format(calendar)
     }
 
-    fun captureDateDay(): String{
+    fun captureDateDay(): String {
         val calendar = Calendar.getInstance().time
         return dateDay.format(calendar)
     }
 
-    fun captureHoraCurrent(): String{
+    fun captureHoraCurrent(): String {
         val calendar = Calendar.getInstance().time
         return hora.format(calendar)
     }
 
-    fun captureHoraCurrentSecond(): String{
+    fun captureHoraCurrentSecond(): String {
         val calendar = Calendar.getInstance().time
         return horaSecond.format(calendar)
     }
 
-    fun captureNextDate(date: String): String{
+    fun captureNextDate(date: String): String {
         val calendar = Calendar.getInstance()
         val data = this.dateString.parse(date)
         calendar.time = data

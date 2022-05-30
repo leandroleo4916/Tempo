@@ -4,39 +4,79 @@ import android.content.Intent
 import android.os.Bundle
 import android.view.View
 import androidx.appcompat.app.AppCompatActivity
+import androidx.recyclerview.widget.LinearLayoutManager
+import com.example.tempo.activity.adapter.MainAdapter
 import com.example.tempo.activity.search.SearchActivity
 import com.example.tempo.databinding.ActivityMainBinding
-import com.example.tempo.remote.ApiServiceMain
-import com.example.tempo.remote.Periodo
-import com.example.tempo.remote.RetrofitClientMain
+import com.example.tempo.interfaces.OnItemClickRecycler
+import com.example.tempo.remote.*
+import com.example.tempo.repository.ResultRequest
 import com.example.tempo.utils.CaptureDateCurrent
 import com.example.tempo.utils.ConstantsCidades
 import com.example.tempo.utils.ConverterPhoto
 import com.example.tempo.utils.SecurityPreferences
 import org.koin.android.ext.android.inject
+import org.koin.androidx.viewmodel.ext.android.viewModel
 import retrofit2.Call
 import retrofit2.Callback
 import retrofit2.Response
 
-class MainActivity : AppCompatActivity() {
+class MainActivity : AppCompatActivity(), OnItemClickRecycler {
 
     private val binding by lazy { ActivityMainBinding.inflate(layoutInflater) }
     private val securityPreferences: SecurityPreferences by inject()
+    private val weatherData: WeatherViewModel by viewModel()
     private val captureDateCurrent = CaptureDateCurrent()
     private val converterPhoto = ConverterPhoto()
+    private lateinit var adapter: MainAdapter
+    private val list = ArrayList<InfoCidade?>()
+    val dateString = captureDateCurrent.captureDateCurrent()
+    private lateinit var id: String
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(binding.root)
 
         hideView()
-        val id = securityPreferences.getStoredString(ConstantsCidades.CIDADES.ID)
+        val city = securityPreferences.getStoredString(ConstantsCidades.CIDADES.NOME)
+        id = securityPreferences.getStoredString(ConstantsCidades.CIDADES.ID)
 
-        if (id.isEmpty()){ openActivity() }
+        if (city.isEmpty()){
+            openActivity()
+        }
         else{
-            observer(id)
+            verifyCidades()
+            recycler()
+            observer(city)
             listener()
         }
+    }
+
+    private fun observer(city: String) {
+        weatherData.searchDataWeather(city).observe(this){
+            it?.let { result ->
+                when (result) {
+                    is ResultRequest.Success -> {
+                        result.dado?.let { res ->
+                            addElementViewTime(res)
+                        }
+                    }
+                    is ResultRequest.Error -> {
+
+                    }
+                    is ResultRequest.ErrorConnection -> {
+
+                    }
+                }
+            }
+        }
+    }
+
+    private fun recycler() {
+        val recycler = binding.recyclerViewMain
+        recycler.layoutManager = LinearLayoutManager(this)
+        adapter = MainAdapter(this)
+        recycler.adapter = adapter
     }
 
     private fun hideView(){
@@ -49,52 +89,70 @@ class MainActivity : AppCompatActivity() {
             textviewCeu.visibility = View.INVISIBLE
             textviewMaxmin.visibility = View.INVISIBLE
             textviewTermica.visibility = View.INVISIBLE
-            imageTempo.visibility = View.INVISIBLE
         }
     }
 
     private fun verifyCidades() {
-        val id = securityPreferences.getStoredString(ConstantsCidades.CIDADES.ID)
-        if (id.isNotEmpty()) { observer(id) }
+        if (id.isNotEmpty()) {
+            //observerInfoAdapter(id)
+            observerInfo(id)
+        }
     }
 
-    private fun observer(id: String) {
+    private fun observerInfo(id: String) {
 
         val remote = RetrofitClientMain().createService(ApiServiceMain::class.java)
         val call: Call<Map<String, Map<String, Periodo>>> = remote.tempo(id)
         call.enqueue(object : Callback<Map<String, Map<String, Periodo>>> {
-            override fun onResponse(call: Call<Map<String, Map<String, Periodo>>>,
-                                    response: Response<Map<String, Map<String, Periodo>>>) {
-                addElementView(response.body(), id)
+            override fun onResponse(
+                call: Call<Map<String, Map<String, Periodo>>>,
+                response: Response<Map<String, Map<String, Periodo>>>
+            ) {
+                val manha = response.body()?.get(id)?.get(dateString)?.manha
+                addElementView(manha)
+                //list.add(response.body()?.get(id)?.keys)
+                //observerInfoAdapter(id)
             }
+
             override fun onFailure(call: Call<Map<String, Map<String, Periodo>>>, t: Throwable) {
                 TODO("Not yet implemented")
             }
         })
     }
 
-    private fun addElementView(body: Map<String, Map<String, Periodo>>?, id: String) {
+    private fun observerInfoAdapter(id: String) {
 
-        val dateString = captureDateCurrent.captureDateCurrent()
+        val remote = RetrofitClientMain().createService(ApiServiceRecycler::class.java)
+        val call: Call<Map<String, Map<String, InfoCidade>>> = remote.tempoRecycler(id)
+        call.enqueue(object : Callback<Map<String, Map<String, InfoCidade>>> {
+            override fun onResponse(
+                call: Call<Map<String, Map<String, InfoCidade>>>,
+                response: Response<Map<String, Map<String, InfoCidade>>>
+            ) {
+                list.add(response.body()?.get(id)?.get(dateString))
+                adapter.updateMain(arrayListOf(response.body()?.get(id)?.get(dateString)))
+            }
+
+            override fun onFailure(call: Call<Map<String, Map<String, InfoCidade>>>, t: Throwable) {
+                TODO("Not yet implemented")
+            }
+        })
+    }
+
+    private fun addElementView(res: InfoCidade?) {
+
         val dateDay = captureDateCurrent.captureDateDay()
         val hora = captureDateCurrent.captureHoraCurrent()
-        val map = body?.get(id)
-        val today = map?.get(dateString)
-        val manha = today?.manha
-        val tarde = today?.tarde
-        val noite = today?.noite
 
         binding.run {
-            textviewCidade.text = manha?.entidade+" - "+manha?.uf
-            textviewDate.text = dateDay+" - "+hora
-            textViewTemperatura.text = manha?.tempMax.toString()
-            textviewCeu.text = manha?.tempMaxTende
-            textviewMaxmin.text = manha?.tempMax.toString()+" / "+manha?.tempMin.toString()
-            textviewTermica.text = manha?.estacao
-            imageTempo.setImageBitmap(manha?.icone?.let {
-                converterPhoto.converterStringByBitmap(it) })
-
             progressMain.visibility = View.GONE
+            textviewCidade.text = res?.entidade+" - "+res?.uf
+            val tempMax = res?.tempMax
+            val tempMin = res?.tempMin
+            textviewCeu.text = res?.resumo
+            textviewDate.text = "$dateDay - $hora"
+            textviewMaxmin.text = "$tempMax"+"º /"+"$tempMin"+"º"
+
             textviewCidade.visibility = View.VISIBLE
             textviewDate.visibility = View.VISIBLE
             textViewTemperatura.visibility = View.VISIBLE
@@ -102,7 +160,14 @@ class MainActivity : AppCompatActivity() {
             textviewCeu.visibility = View.VISIBLE
             textviewMaxmin.visibility = View.VISIBLE
             textviewTermica.visibility = View.VISIBLE
-            imageTempo.visibility = View.VISIBLE
+        }
+    }
+
+    private fun addElementViewTime(res: WeatherDataClass) {
+        binding.run {
+            val fell = res.main.feelsLike
+            textviewTermica.text = "Sessação térmica $fell"+"º".toInt().toString()
+            textViewTemperatura.text = res.main.temp.toInt().toString()
         }
     }
 
@@ -118,5 +183,9 @@ class MainActivity : AppCompatActivity() {
         super.onRestart()
         hideView()
         verifyCidades()
+    }
+
+    override fun clickRecycler(id: String, cidade: String) {
+        TODO("Not yet implemented")
     }
 }

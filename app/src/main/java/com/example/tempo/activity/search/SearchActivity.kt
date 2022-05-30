@@ -30,14 +30,13 @@ class SearchActivity : AppCompatActivity(), OnItemClickRecycler {
 
         recycler()
         observer()
-        searchCidadesFilter()
+        searchCitiesFilter()
 
     }
 
     private fun recycler() {
         val recycler = binding.recyclerCidades
         recycler.layoutManager = LinearLayoutManager(this)
-
         adapter = CidadesAdapter(this)
         recycler.adapter = adapter
     }
@@ -45,7 +44,7 @@ class SearchActivity : AppCompatActivity(), OnItemClickRecycler {
     private fun observer() {
 
         val remote = RetrofitClient().createService(ApiServiceSearch::class.java)
-        val call: Call<ArrayList<Cidades>> = remote.cidades()
+        val call: Call<ArrayList<Cidades>> = remote.cities()
         call.enqueue(object : Callback<ArrayList<Cidades>> {
             override fun onResponse(call: Call<ArrayList<Cidades>>,
                                     res: Response<ArrayList<Cidades>>) {
@@ -57,7 +56,7 @@ class SearchActivity : AppCompatActivity(), OnItemClickRecycler {
 
     }
 
-    private fun searchCidadesFilter() {
+    private fun searchCitiesFilter() {
 
         binding.editTextSearch.addTextChangedListener(object : TextWatcher {
             override fun onTextChanged(s: CharSequence, start: Int, before: Int, count: Int) {
@@ -72,6 +71,15 @@ class SearchActivity : AppCompatActivity(), OnItemClickRecycler {
     override fun clickRecycler(id: String, cidade: String) {
         repositoryCidades.storeCidade(id, cidade)
         finish()
+    }
+
+    private fun listener(){
+        binding.buttomLocalizacao.setOnClickListener{
+
+        }
+        binding.backActivity.setOnClickListener {
+            finish()
+        }
     }
 
 }

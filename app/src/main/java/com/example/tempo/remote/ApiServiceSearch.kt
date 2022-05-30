@@ -5,5 +5,5 @@ import retrofit2.http.GET
 
 interface ApiServiceSearch {
     @GET("localidades/municipios")
-    fun cidades(): Call<ArrayList<Cidades>>
+    fun cities(): Call<ArrayList<Cidades>>
 }

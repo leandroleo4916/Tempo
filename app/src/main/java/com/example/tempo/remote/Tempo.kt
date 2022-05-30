@@ -5,9 +5,9 @@ import com.google.gson.annotations.SerializedName
 data class Tempo (
     val data1: Map<String, Periodo>,
     val data2: Map<String, Periodo>,
-    val data3: Map<String, Map<String, InfoCidade>>,
-    val data4: Map<String, Map<String, InfoCidade>>,
-    val data5: Map<String, Map<String, InfoCidade>>
+    val data3: InfoCidade,
+    val data4: InfoCidade,
+    val data5: InfoCidade
 )
 
 data class Periodo (
