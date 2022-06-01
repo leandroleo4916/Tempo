@@ -31,6 +31,7 @@ class SearchActivity : AppCompatActivity(), OnItemClickRecycler {
         recycler()
         observer()
         searchCitiesFilter()
+        listener()
 
     }
 

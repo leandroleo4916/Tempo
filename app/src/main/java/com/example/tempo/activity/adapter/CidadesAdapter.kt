@@ -52,7 +52,7 @@ class CidadesAdapter(private val listener: OnItemClickRecycler):
             val position = adapterPosition
             val id = listCidades[position].id
             val cidade = listCidades[position].nome
-            val state = listCidades[position].microrregiao.mesorregiao.uf.nome
+            val state = listCidades[position].microrregiao.mesorregiao.uf.sigla
 
             when(view){ itemView -> listener.clickCity(id, cidade, state) }
         }

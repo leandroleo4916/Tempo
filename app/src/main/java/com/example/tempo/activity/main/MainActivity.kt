@@ -160,7 +160,9 @@ class MainActivity : AppCompatActivity() {
 
         binding.run {
             val time = res.main.temp.toInt()
-            progressMain.visibility = View.GONE
+            val max = res.main.tempMax.toInt()
+            var min = res.main.tempMin
+            if (min > min.toInt()+0.5) min += 1
 
             textviewCidade.text = "$city"+" - "+"$uf"
             textviewCeu.text = res.weather[0].description
@@ -168,8 +170,9 @@ class MainActivity : AppCompatActivity() {
             textviewHumidity.text = "Humidade ${res.main.humidity}%"
             textviewTermica.text = "Sessação térmica de ${res.main.feelsLike.toInt()}"+"º"
             textViewTemperatura.text = time.toString()
-            textviewMaxmin.text = "${res.main.tempMax.toInt()}"+"º /"+"${res.main.tempMax.toInt()}"+"º"
+            textviewMaxmin.text = "$max"+"º/"+"${min.toInt()}"+"º"
 
+            progressMain.visibility = View.GONE
             textviewCidade.visibility = View.VISIBLE
             textviewDate.visibility = View.VISIBLE
             textViewTemperatura.visibility = View.VISIBLE
