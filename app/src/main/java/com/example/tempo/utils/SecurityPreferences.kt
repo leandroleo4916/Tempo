@@ -20,6 +20,7 @@ class SecurityPreferences(context: Context) {
         mSharedPreferences.edit().run {
             remove(ConstantsCidades.CIDADES.ID).apply()
             remove(ConstantsCidades.CIDADES.NOME).apply()
+            remove(ConstantsCidades.CIDADES.UF).apply()
         }
 
     }

@@ -8,7 +8,6 @@ import androidx.recyclerview.widget.LinearLayoutManager
 import com.example.tempo.activity.adapter.MainAdapter
 import com.example.tempo.activity.search.SearchActivity
 import com.example.tempo.databinding.ActivityMainBinding
-import com.example.tempo.interfaces.OnItemClickRecycler
 import com.example.tempo.remote.*
 import com.example.tempo.repository.ResultRequest
 import com.example.tempo.utils.CaptureDateCurrent
@@ -21,7 +20,7 @@ import retrofit2.Call
 import retrofit2.Callback
 import retrofit2.Response
 
-class MainActivity : AppCompatActivity(), OnItemClickRecycler {
+class MainActivity : AppCompatActivity() {
 
     private val binding by lazy { ActivityMainBinding.inflate(layoutInflater) }
     private val securityPreferences: SecurityPreferences by inject()
@@ -32,24 +31,30 @@ class MainActivity : AppCompatActivity(), OnItemClickRecycler {
     private val list = ArrayList<InfoCidade?>()
     val dateString = captureDateCurrent.captureDateCurrent()
     private lateinit var id: String
+    private lateinit var city: String
+    private lateinit var uf: String
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(binding.root)
 
-        hideView()
-        val city = securityPreferences.getStoredString(ConstantsCidades.CIDADES.NOME)
-        id = securityPreferences.getStoredString(ConstantsCidades.CIDADES.ID)
+        //hideView()
+        searchCity()
 
         if (city.isEmpty()){
             openActivity()
         }
         else{
-            verifyCidades()
             recycler()
             observer(city)
             listener()
         }
+    }
+
+    private fun searchCity(){
+        id = securityPreferences.getStoredString(ConstantsCidades.CIDADES.ID)
+        city = securityPreferences.getStoredString(ConstantsCidades.CIDADES.NOME)
+        uf = securityPreferences.getStoredString(ConstantsCidades.CIDADES.UF)
     }
 
     private fun observer(city: String) {
@@ -75,7 +80,7 @@ class MainActivity : AppCompatActivity(), OnItemClickRecycler {
     private fun recycler() {
         val recycler = binding.recyclerViewMain
         recycler.layoutManager = LinearLayoutManager(this)
-        adapter = MainAdapter(this)
+        adapter = MainAdapter()
         recycler.adapter = adapter
     }
 
@@ -92,13 +97,6 @@ class MainActivity : AppCompatActivity(), OnItemClickRecycler {
         }
     }
 
-    private fun verifyCidades() {
-        if (id.isNotEmpty()) {
-            //observerInfoAdapter(id)
-            observerInfo(id)
-        }
-    }
-
     private fun observerInfo(id: String) {
 
         val remote = RetrofitClientMain().createService(ApiServiceMain::class.java)
@@ -108,8 +106,8 @@ class MainActivity : AppCompatActivity(), OnItemClickRecycler {
                 call: Call<Map<String, Map<String, Periodo>>>,
                 response: Response<Map<String, Map<String, Periodo>>>
             ) {
-                val manha = response.body()?.get(id)?.get(dateString)?.manha
-                addElementView(manha)
+                //val manha = response.body()?.get(id)?.get(dateString)?.manha
+                //addElementView(manha)
                 //list.add(response.body()?.get(id)?.keys)
                 //observerInfoAdapter(id)
             }
@@ -152,6 +150,25 @@ class MainActivity : AppCompatActivity(), OnItemClickRecycler {
             textviewCeu.text = res?.resumo
             textviewDate.text = "$dateDay - $hora"
             textviewMaxmin.text = "$tempMax"+"º /"+"$tempMin"+"º"
+        }
+    }
+
+    private fun addElementViewTime(res: WeatherDataClass) {
+
+        val dateDay = captureDateCurrent.captureDateDay()
+        val hora = captureDateCurrent.captureHoraCurrent()
+
+        binding.run {
+            val time = res.main.temp.toInt()
+            progressMain.visibility = View.GONE
+
+            textviewCidade.text = "$city"+" - "+"$uf"
+            textviewCeu.text = res.weather[0].description
+            textviewDate.text = "$dateDay - $hora"
+            textviewHumidity.text = "Humidade ${res.main.humidity}%"
+            textviewTermica.text = "Sessação térmica de ${res.main.feelsLike.toInt()}"+"º"
+            textViewTemperatura.text = time.toString()
+            textviewMaxmin.text = "${res.main.tempMax.toInt()}"+"º /"+"${res.main.tempMax.toInt()}"+"º"
 
             textviewCidade.visibility = View.VISIBLE
             textviewDate.visibility = View.VISIBLE
@@ -160,14 +177,6 @@ class MainActivity : AppCompatActivity(), OnItemClickRecycler {
             textviewCeu.visibility = View.VISIBLE
             textviewMaxmin.visibility = View.VISIBLE
             textviewTermica.visibility = View.VISIBLE
-        }
-    }
-
-    private fun addElementViewTime(res: WeatherDataClass) {
-        binding.run {
-            val fell = res.main.feelsLike
-            textviewTermica.text = "Sessação térmica $fell"+"º".toInt().toString()
-            textViewTemperatura.text = res.main.temp.toInt().toString()
         }
     }
 
@@ -181,11 +190,8 @@ class MainActivity : AppCompatActivity(), OnItemClickRecycler {
 
     override fun onRestart() {
         super.onRestart()
-        hideView()
-        verifyCidades()
+        searchCity()
+        observer(city)
     }
 
-    override fun clickRecycler(id: String, cidade: String) {
-        TODO("Not yet implemented")
-    }
 }

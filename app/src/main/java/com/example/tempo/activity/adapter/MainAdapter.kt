@@ -6,10 +6,9 @@ import android.view.ViewGroup
 import android.widget.TextView
 import androidx.recyclerview.widget.RecyclerView
 import com.example.tempo.R
-import com.example.tempo.interfaces.OnItemClickRecycler
 import com.example.tempo.remote.InfoCidade
 
-class MainAdapter(private val listener: OnItemClickRecycler):
+class MainAdapter():
     RecyclerView.Adapter<MainAdapter.MainViewHolder>() {
 
     private var data = arrayListOf<InfoCidade?>()

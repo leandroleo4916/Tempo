@@ -68,8 +68,8 @@ class SearchActivity : AppCompatActivity(), OnItemClickRecycler {
         })
     }
 
-    override fun clickRecycler(id: String, cidade: String) {
-        repositoryCidades.storeCidade(id, cidade)
+    override fun clickCity(id: String, cidade: String, state: String) {
+        repositoryCidades.storeCidade(id, cidade, state)
         finish()
     }
 

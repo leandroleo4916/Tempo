@@ -2,6 +2,7 @@ package com.example.tempo.di
 
 import com.example.tempo.activity.main.WeatherViewModel
 import com.example.tempo.remote.ApiServiceEmit
+import com.example.tempo.repository.RepositoryCidades
 import com.example.tempo.repository.WeatherRepository
 import com.example.tempo.utils.SecurityPreferences
 import okhttp3.OkHttpClient
@@ -38,9 +39,12 @@ val securityPreferencesModule = module { factory { SecurityPreferences(get()) } 
 val service = module { single {
     single<ApiServiceEmit> { get<Retrofit>().create(ApiServiceEmit::class.java) }
 } }
-val weatherRepository= module { single { WeatherRepository(get()) } }
+val weatherRepository = module { single { WeatherRepository(get()) } }
+val cityRepository = module { single { RepositoryCidades(get()) } }
+val securityPreferences = module { single { SecurityPreferences(get()) } }
 val weatherViewModel = module { viewModel { WeatherViewModel(get()) } }
 
 val appModules = listOf(
-    retrofitModule, securityPreferencesModule, service, weatherRepository, weatherViewModel
+    retrofitModule, securityPreferencesModule, service, weatherRepository, weatherViewModel,
+    cityRepository
 )
