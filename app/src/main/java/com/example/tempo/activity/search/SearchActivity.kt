@@ -1,11 +1,14 @@
 package com.example.tempo.activity.search
 
 import android.Manifest
+import android.app.AlertDialog
 import android.content.Context
+import android.content.DialogInterface
+import android.content.Intent
 import android.content.pm.PackageManager
-import android.location.Location
 import android.location.LocationManager
 import android.os.Bundle
+import android.provider.Settings
 import android.text.Editable
 import android.text.TextWatcher
 import android.view.View
@@ -33,12 +36,11 @@ class SearchActivity : AppCompatActivity(), OnItemClickRecycler {
     private val repositoryCities: RepositoryCidades by inject()
     private val binding by lazy { ActivitySearchBinding.inflate(layoutInflater) }
     private lateinit var adapter: CidadesAdapter
+    private lateinit var client: FusedLocationProviderClient
     private lateinit var locationManager: LocationManager
-    private lateinit var location: Location
     private val permissionCode = 1000
     private var latitude: Double = 0.0
     private var longitude: Double = 0.0
-    private lateinit var client: FusedLocationProviderClient
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -102,35 +104,81 @@ class SearchActivity : AppCompatActivity(), OnItemClickRecycler {
 
     private fun getPermission(){
 
-        if (ActivityCompat.checkSelfPermission(this,
+        if (ActivityCompat.checkSelfPermission(
+                this,
                 Manifest.permission.ACCESS_FINE_LOCATION
-            ) != PackageManager.PERMISSION_GRANTED && ActivityCompat.checkSelfPermission(this,
+            ) == PackageManager.PERMISSION_GRANTED &&
+            ActivityCompat.checkSelfPermission(
+                this,
                 Manifest.permission.ACCESS_COARSE_LOCATION
-            ) != PackageManager.PERMISSION_GRANTED
+            ) == PackageManager.PERMISSION_GRANTED
         ) {
             locationManager = this.getSystemService(Context.LOCATION_SERVICE) as LocationManager
             val gpsActive = locationManager.isProviderEnabled(LocationManager.GPS_PROVIDER)
             if (gpsActive) {
-                return
+                client.lastLocation
+                    .addOnSuccessListener {
+                        if (it != null){
+                            latitude = it.latitude
+                            longitude = it.longitude
+                        }
+                        else {
+                            toastMessage("Não foi possível obter sua localização!")
+                        }
+                    }
+                    .addOnFailureListener {
+                        toastMessage("Não foi possível obter sua localização!")
+                    }
             }
             else {
-                toastMessage("Por favor, ative o GPS")
+                permissionGps()
             }
         }
+    }
 
-        client.lastLocation
-            .addOnSuccessListener {
-                if (it != null){
-                    latitude = location.latitude
-                    longitude = location.longitude
-                }
-                else {
-                    toastMessage("Não foi possível obter sua localização!")
+    private fun permissionGps(){
+        ActivityCompat.requestPermissions(this,
+            arrayOf(Manifest.permission.ACCESS_COARSE_LOCATION,
+                    Manifest.permission.ACCESS_FINE_LOCATION), permissionCode)
+    }
+
+    override fun onRequestPermissionsResult (requestCode: Int,
+                                             permissions: Array<out String>,
+                                             grantResults: IntArray) {
+        super.onRequestPermissionsResult(requestCode, permissions, grantResults)
+        val r = requestCode
+        val p = permissions
+        val g = grantResults
+        createNoGpsDialog()
+    }
+
+    private fun createNoGpsDialog() {
+        val dialogClickListenerPositive =
+            DialogInterface.OnClickListener { dialog, which ->
+                when (which) {
+                    DialogInterface.BUTTON_POSITIVE -> {
+                        val callGPSSettingIntent = Intent(
+                            Settings.ACTION_LOCATION_SOURCE_SETTINGS
+                        )
+                        startActivity(callGPSSettingIntent)
+                    }
                 }
             }
-            .addOnFailureListener {
-                toastMessage("Por favor, ative o GPS")
+        val dialogClickListenerNegative =
+            DialogInterface.OnClickListener { dialog, which ->
+                when (which) {
+                    DialogInterface.BUTTON_NEGATIVE -> {
+                        toastMessage("GPS não foi ativado!")
+                    }
+                }
             }
+        val builder = AlertDialog.Builder(this)
+        builder.setMessage("Por favor, ative seu GPS.")
+            .setPositiveButton("Ativar", dialogClickListenerPositive)
+            .setNegativeButton("Não Ativar", dialogClickListenerNegative)
+            .create()
+            .show()
+
     }
 
     private fun toastMessage(message: String){
