@@ -25,7 +25,7 @@ import com.example.tempo.interfaces.OnItemClickRecycler
 import com.example.tempo.remote.ApiServiceSearch
 import com.example.tempo.remote.Cidades
 import com.example.tempo.remote.RetrofitClient
-import com.example.tempo.repository.RepositoryCidades
+import com.example.tempo.repository.RepositoryCities
 import com.google.android.gms.location.FusedLocationProviderClient
 import com.google.android.gms.location.LocationServices
 import org.koin.android.ext.android.inject
@@ -35,10 +35,9 @@ import retrofit2.Response
 import java.util.*
 import kotlin.properties.Delegates
 
-
 class SearchActivity : AppCompatActivity(), OnItemClickRecycler {
 
-    private val repositoryCities: RepositoryCidades by inject()
+    private val repositoryCities: RepositoryCities by inject()
     private val binding by lazy { ActivitySearchBinding.inflate(layoutInflater) }
     private lateinit var adapter: CidadesAdapter
     private lateinit var client: FusedLocationProviderClient
@@ -46,7 +45,6 @@ class SearchActivity : AppCompatActivity(), OnItemClickRecycler {
     private val permissionCode = 1000
     private var latitude: Double = 0.0
     private var longitude: Double = 0.0
-    private var init = 0
     private var gpsActive by Delegates.notNull<Boolean>()
 
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -63,11 +61,13 @@ class SearchActivity : AppCompatActivity(), OnItemClickRecycler {
 
     }
 
-    override fun onResume() {
-        super.onResume()
-        if (init == 1 && gpsActive){
+    override fun onRestart() {
+        super.onRestart()
+        gpsActive = locationManager.isProviderEnabled(LocationManager.GPS_PROVIDER)
+        if (gpsActive) {
             getPosition()
         }
+        else toastMessage("Gps não ativado!")
     }
 
     private fun recycler() {
@@ -88,7 +88,6 @@ class SearchActivity : AppCompatActivity(), OnItemClickRecycler {
             ) {
                 res.body()?.let { adapter.updateCidades(it) }
             }
-
             override fun onFailure(call: Call<ArrayList<Cidades>>, t: Throwable) {}
         })
 
@@ -101,14 +100,13 @@ class SearchActivity : AppCompatActivity(), OnItemClickRecycler {
                 adapter.filter.filter(s.toString())
                 binding.buttomLocalizacao.visibility = View.INVISIBLE
             }
-
             override fun beforeTextChanged(s: CharSequence, start: Int, count: Int, after: Int) {}
             override fun afterTextChanged(s: Editable) {}
         })
     }
 
-    override fun clickCity(id: String, cidade: String, state: String) {
-        repositoryCities.storeCidade(id, cidade, state)
+    override fun clickCity(id: String, city: String, state: String) {
+        repositoryCities.storeCity(id, city, state)
         finish()
     }
 
@@ -137,14 +135,9 @@ class SearchActivity : AppCompatActivity(), OnItemClickRecycler {
 
     @SuppressLint("MissingPermission")
     private fun checkGpsActive(){
-
         gpsActive = locationManager.isProviderEnabled(LocationManager.GPS_PROVIDER)
-        if (gpsActive) {
-            getPosition()
-        }
-        else {
-            activeGpsDialog()
-        }
+        if (gpsActive) getPosition()
+        else activeGpsDialog()
     }
 
     @SuppressLint("MissingPermission")
@@ -197,15 +190,33 @@ class SearchActivity : AppCompatActivity(), OnItemClickRecycler {
         }
     }
 
+    private fun getAddress(){
+
+        val geocode = Geocoder(applicationContext)
+        try {
+            val addresses: List<Address> = geocode.getFromLocation(latitude, longitude, 1)
+            val address = addresses[0].getAddressLine(0)
+            val ind = address.split(",")
+            val cityAndState = ind[2]
+            val cityDiv = cityAndState.split(" - ")
+            val city = cityDiv[0].trim()
+            val state = cityDiv[1].trim()
+            val id = "0"
+
+            repositoryCities.storeCity(id, city, state)
+            finish()
+
+        } catch (e: Exception) {
+            toastMessage("Não conseguimos obter o endereço!")
+        }
+    }
+
     private fun activeGpsDialog() {
         val dialogClickListenerPositive =
             DialogInterface.OnClickListener { dialog, which ->
                 when (which) {
                     DialogInterface.BUTTON_POSITIVE -> {
-                        val callGPSSettingIntent = Intent(
-                            Settings.ACTION_LOCATION_SOURCE_SETTINGS
-                        )
-                        init = 1
+                        val callGPSSettingIntent = Intent(Settings.ACTION_LOCATION_SOURCE_SETTINGS)
                         startActivity(callGPSSettingIntent)
                     }
                 }
@@ -221,21 +232,9 @@ class SearchActivity : AppCompatActivity(), OnItemClickRecycler {
         val builder = AlertDialog.Builder(this)
         builder.setMessage("Por favor, ative seu GPS.")
             .setPositiveButton("Ativar", dialogClickListenerPositive)
-            .setNegativeButton("Não Ativar", dialogClickListenerNegative)
+            .setNegativeButton("Cancelar", dialogClickListenerNegative)
             .create()
             .show()
-
-    }
-
-    private fun getAddress(){
-
-        val geocode = Geocoder(applicationContext)
-        try {
-            val addresses: List<Address> = geocode.getFromLocation(latitude, longitude, 1)
-            val e = addresses[0].getAddressLine(0)
-        } catch (e: Exception) {
-            toastMessage("Não conseguimos capturar o endereço!")
-        }
     }
 
     private fun toastMessage(message: String){

@@ -28,6 +28,7 @@
         android:textAlignment="center"
         android:textColor="@color/white"
         android:textSize="20sp"
+        android:visibility="invisible"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent"
         tools:ignore="MissingConstraints" />
@@ -53,6 +54,7 @@
         android:textAlignment="center"
         android:textColor="@color/white"
         android:textSize="12sp"
+        android:visibility="invisible"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/textview_cidade"
         tools:ignore="MissingConstraints" />
@@ -68,6 +70,7 @@
         android:textAlignment="center"
         android:textColor="@color/white"
         android:textSize="85sp"
+        android:visibility="invisible"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/textview_date"
         tools:ignore="MissingConstraints" />
@@ -81,6 +84,7 @@
         android:textAlignment="center"
         android:textColor="@color/white"
         android:textSize="60sp"
+        android:visibility="invisible"
         app:layout_constraintStart_toEndOf="@+id/textView_temperatura"
         app:layout_constraintTop_toTopOf="@+id/textView_temperatura"
         tools:ignore="MissingConstraints" />
@@ -95,6 +99,7 @@
         android:textColor="@color/white"
         android:textSize="14sp"
         android:singleLine="true"
+        android:visibility="invisible"
         app:layout_constraintBottom_toTopOf="@+id/textview_maxmin"
         app:layout_constraintEnd_toEndOf="parent"
         tools:ignore="MissingConstraints" />
@@ -108,6 +113,7 @@
         android:textAlignment="center"
         android:textColor="@color/white"
         android:textSize="14sp"
+        android:visibility="invisible"
         app:layout_constraintBottom_toTopOf="@+id/textview_termica"
         app:layout_constraintEnd_toEndOf="parent"
         tools:ignore="MissingConstraints" />
@@ -121,6 +127,7 @@
         android:textAlignment="center"
         android:textColor="@color/white"
         android:textSize="14sp"
+        android:visibility="invisible"
         app:layout_constraintBottom_toTopOf="@+id/textview_humidity"
         app:layout_constraintEnd_toEndOf="parent"
         tools:ignore="MissingConstraints" />
@@ -135,6 +142,7 @@
         android:textAlignment="center"
         android:textColor="@color/white"
         android:textSize="14sp"
+        android:visibility="invisible"
         app:layout_constraintBottom_toBottomOf="@+id/textView_temperatura"
         app:layout_constraintEnd_toEndOf="parent"
         tools:ignore="MissingConstraints" />

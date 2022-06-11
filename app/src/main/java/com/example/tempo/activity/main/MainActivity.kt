@@ -3,6 +3,7 @@ package com.example.tempo.activity.main
 import android.content.Intent
 import android.os.Bundle
 import android.view.View
+import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.example.tempo.activity.adapter.MainAdapter
@@ -29,7 +30,7 @@ class MainActivity : AppCompatActivity() {
     private val converterPhoto = ConverterPhoto()
     private lateinit var adapter: MainAdapter
     private val list = ArrayList<InfoCidade?>()
-    val dateString = captureDateCurrent.captureDateCurrent()
+    private val dateString = captureDateCurrent.captureDateCurrent()
     private lateinit var id: String
     private lateinit var city: String
     private lateinit var uf: String
@@ -45,7 +46,7 @@ class MainActivity : AppCompatActivity() {
         }
         else{
             recycler()
-            observer(city)
+            observer()
             listener()
         }
     }
@@ -56,7 +57,7 @@ class MainActivity : AppCompatActivity() {
         uf = securityPreferences.getStoredString(ConstantsCidades.CIDADES.UF)
     }
 
-    private fun observer(city: String) {
+    private fun observer() {
         weatherData.searchDataWeather(city).observe(this){
             it?.let { result ->
                 when (result) {
@@ -66,10 +67,10 @@ class MainActivity : AppCompatActivity() {
                         }
                     }
                     is ResultRequest.Error -> {
-
+                        result.exception.message?.let { it1 -> toastMessage(it1) }
                     }
                     is ResultRequest.ErrorConnection -> {
-
+                        result.exception.message?.let { it1 -> toastMessage(it1) }
                     }
                 }
             }
@@ -78,8 +79,8 @@ class MainActivity : AppCompatActivity() {
 
     private fun recycler() {
         val recycler = binding.recyclerViewMain
-        recycler.layoutManager = LinearLayoutManager(this)
         adapter = MainAdapter()
+        recycler.layoutManager = LinearLayoutManager(this)
         recycler.adapter = adapter
     }
 
@@ -159,6 +160,7 @@ class MainActivity : AppCompatActivity() {
 
         binding.run {
             val time = res.main.temp.toInt()
+            progressMain.visibility = View.GONE
             val max = res.main.tempMax.toInt()
             var min = res.main.tempMin
             if (min > min.toInt()+0.5) min += 1
@@ -169,6 +171,7 @@ class MainActivity : AppCompatActivity() {
             textviewHumidity.text = "Humidade ${res.main.humidity}%"
             textviewTermica.text = "Sessação térmica de ${res.main.feelsLike.toInt()}"+"º"
             textViewTemperatura.text = time.toString()
+            textviewMaxmin.text = "${res.main.tempMax.toInt()}"+"º /"+"${res.main.tempMax.toInt()}"+"º"
             textviewMaxmin.text = "$max"+"º/"+"${min.toInt()}"+"º"
 
             progressMain.visibility = View.GONE
@@ -193,7 +196,10 @@ class MainActivity : AppCompatActivity() {
     override fun onRestart() {
         super.onRestart()
         searchCity()
-        observer(city)
+        observer()
     }
 
+    private fun toastMessage(message: String){
+        Toast.makeText(this, message, Toast.LENGTH_LONG).show()
+    }
 }
