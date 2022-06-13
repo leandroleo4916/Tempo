@@ -27,5 +27,4 @@ class WeatherRepository(private val service: ApiServiceEmit) {
             emit(ResultRequest.Error(exception = e))
         }
     }
-
 }

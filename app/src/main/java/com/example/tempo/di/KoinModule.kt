@@ -1,8 +1,11 @@
 package com.example.tempo.di
 
 import com.example.tempo.activity.main.WeatherViewModel
+import com.example.tempo.activity.search.SearchViewModel
+import com.example.tempo.dbhistory.DataBaseHistory
 import com.example.tempo.remote.ApiServiceEmit
 import com.example.tempo.repository.RepositoryCities
+import com.example.tempo.repository.RepositoryHistory
 import com.example.tempo.repository.WeatherRepository
 import com.example.tempo.utils.SecurityPreferences
 import okhttp3.OkHttpClient
@@ -37,10 +40,13 @@ val service = module { single {
 } }
 val weatherRepository = module { single { WeatherRepository(get()) } }
 val cityRepository = module { single { RepositoryCities(get()) } }
+val repositoryHistory = module { single { RepositoryHistory(get()) } }
 val securityPreferences = module { single { SecurityPreferences(get()) } }
 val weatherViewModel = module { viewModel { WeatherViewModel(get()) } }
+val historyViewModel = module { viewModel { SearchViewModel(get()) } }
+val dataBase = module { single { DataBaseHistory(get()) } }
 
 val appModules = listOf(
     retrofitModule, securityPreferences, service, weatherRepository,
-    weatherViewModel, cityRepository
+    weatherViewModel, cityRepository, dataBase, repositoryHistory, historyViewModel
 )

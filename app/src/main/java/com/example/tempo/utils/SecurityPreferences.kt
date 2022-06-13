@@ -15,12 +15,4 @@ class SecurityPreferences(context: Context) {
     fun getStoredString(key: String) : String{
         return mSharedPreferences.getString(key, "").toString()
     }
-
-    fun removeString(){
-        mSharedPreferences.edit().run {
-            remove(ConstantsCidades.CIDADES.ID).apply()
-            remove(ConstantsCidades.CIDADES.NOME).apply()
-            remove(ConstantsCidades.CIDADES.UF).apply()
-        }
-    }
 }

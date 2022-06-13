@@ -1,4 +1,4 @@
-package com.example.tempo.activity.adapter
+package com.example.tempo.adapter
 
 import android.view.LayoutInflater
 import android.view.View
@@ -13,8 +13,8 @@ import com.example.tempo.remote.Cidades
 import java.util.*
 import kotlin.collections.ArrayList
 
-class CidadesAdapter(private val listener: OnItemClickRecycler):
-    RecyclerView.Adapter<CidadesAdapter.CidadesViewHolder>(), Filterable {
+class CitiesAdapter(private val listener: OnItemClickRecycler):
+    RecyclerView.Adapter<CitiesAdapter.CidadesViewHolder>(), Filterable {
 
     private var data = mutableListOf<Cidades>()
     private var listCidades = mutableListOf<Cidades>()

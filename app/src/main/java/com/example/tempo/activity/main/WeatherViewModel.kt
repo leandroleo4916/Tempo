@@ -8,8 +8,8 @@ import com.example.tempo.repository.WeatherRepository
 
 class WeatherViewModel(private val repository: WeatherRepository) : ViewModel() {
 
-    fun searchDataWeather(city: String): LiveData<ResultRequest<WeatherDataClass?>> =
-        repository.weatherData(city)
+    fun searchDataWeather(city: String):
+            LiveData<ResultRequest<WeatherDataClass?>> = repository.weatherData(city)
 
 }
 

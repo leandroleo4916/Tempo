@@ -1,4 +1,4 @@
-package com.example.tempo.activity.adapter
+package com.example.tempo.adapter
 
 import android.view.LayoutInflater
 import android.view.View
@@ -8,11 +8,10 @@ import androidx.recyclerview.widget.RecyclerView
 import com.example.tempo.R
 import com.example.tempo.remote.InfoCidade
 
-class MainAdapter():
-    RecyclerView.Adapter<MainAdapter.MainViewHolder>() {
+class MainAdapter: RecyclerView.Adapter<MainAdapter.MainViewHolder>() {
 
     private var data = arrayListOf<InfoCidade?>()
-    private var listCidades = arrayListOf<InfoCidade>()
+    private var listCities = arrayListOf<InfoCidade>()
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): MainViewHolder {
         val item = LayoutInflater
@@ -24,13 +23,13 @@ class MainAdapter():
 
     override fun onBindViewHolder(holder: MainViewHolder, position: Int) {
 
-        val cidade = listCidades[position]
-        holder.run { cidade }
+        val city = listCities[position]
+        holder.run { city }
 
     }
 
     override fun getItemCount(): Int {
-        return listCidades.size
+        return listCities.size
     }
 
     inner class MainViewHolder (itemView: View): RecyclerView.ViewHolder(itemView),
@@ -40,8 +39,8 @@ class MainAdapter():
 
         override fun onClick(view: View?) {
             val position = adapterPosition
-            val id = listCidades[position]
-            val cidade = listCidades[position]
+            val id = listCities[position]
+            val cidade = listCities[position]
 
             when(view){ } //itemView -> listener.clickRecycler(id, cidade) }
         }

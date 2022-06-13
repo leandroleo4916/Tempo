@@ -8,6 +8,30 @@
     android:background="@color/blue"
     tools:context=".activity.search.SearchActivity">
 
+    <androidx.recyclerview.widget.RecyclerView
+        android:id="@+id/recycler_history"
+        android:layout_width="0dp"
+        android:layout_height="0dp"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="0.0"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/bottom_location"
+        tools:listitem="@layout/recycler_history" />
+
+    <TextView
+        android:id="@+id/textView_history_here"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="40dp"
+        android:gravity="center"
+        android:text="Seu histórico fica aqui!"
+        android:textColor="@color/white"
+        android:textSize="22sp"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="@+id/recycler_cidades"
+        app:layout_constraintTop_toTopOf="@+id/recycler_history" />
+
     <ImageView
         android:id="@+id/back_activity"
         android:layout_width="26dp"
@@ -17,7 +41,7 @@
         app:layout_constraintEnd_toStartOf="@+id/editText_search"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="@+id/editText_search"
-        tools:ignore="MissingConstraints" />
+        tools:ignore="ContentDescription,MissingConstraints" />
 
     <EditText
         android:id="@+id/editText_search"
@@ -38,7 +62,7 @@
         android:autofillHints="" />
 
     <Button
-        android:id="@+id/buttom_localizacao"
+        android:id="@+id/bottom_location"
         android:layout_width="match_parent"
         android:layout_height="55dp"
         android:layout_marginTop="8dp"
@@ -56,6 +80,7 @@
         android:id="@+id/recycler_cidades"
         android:layout_width="0dp"
         android:layout_height="0dp"
+        android:visibility="gone"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintHorizontal_bias="0.0"

@@ -19,27 +19,37 @@ import androidx.appcompat.app.AlertDialog
 import androidx.appcompat.app.AppCompatActivity
 import androidx.core.app.ActivityCompat
 import androidx.recyclerview.widget.LinearLayoutManager
-import com.example.tempo.activity.adapter.CidadesAdapter
+import com.example.tempo.adapter.AdapterHistory
+import com.example.tempo.adapter.CitiesAdapter
 import com.example.tempo.databinding.ActivitySearchBinding
+import com.example.tempo.dataclass.CityData
+import com.example.tempo.interfaces.OnItemClickDeleteCity
+import com.example.tempo.interfaces.OnItemClickItemCity
 import com.example.tempo.interfaces.OnItemClickRecycler
 import com.example.tempo.remote.ApiServiceSearch
 import com.example.tempo.remote.Cidades
 import com.example.tempo.remote.RetrofitClient
 import com.example.tempo.repository.RepositoryCities
+import com.example.tempo.repository.RepositoryHistory
 import com.google.android.gms.location.FusedLocationProviderClient
 import com.google.android.gms.location.LocationServices
 import org.koin.android.ext.android.inject
+import org.koin.androidx.viewmodel.ext.android.viewModel
 import retrofit2.Call
 import retrofit2.Callback
 import retrofit2.Response
 import java.util.*
 import kotlin.properties.Delegates
 
-class SearchActivity : AppCompatActivity(), OnItemClickRecycler {
+class SearchActivity : AppCompatActivity(), OnItemClickRecycler, OnItemClickItemCity,
+    OnItemClickDeleteCity {
 
     private val repositoryCities: RepositoryCities by inject()
+    private val repositoryHistory: RepositoryHistory by inject()
     private val binding by lazy { ActivitySearchBinding.inflate(layoutInflater) }
-    private lateinit var adapter: CidadesAdapter
+    private lateinit var adapterCities: CitiesAdapter
+    private lateinit var adapterHistory: AdapterHistory
+    private val viewModelSearch: SearchViewModel by viewModel()
     private lateinit var client: FusedLocationProviderClient
     private lateinit var locationManager: LocationManager
     private val permissionCode = 1000
@@ -54,8 +64,10 @@ class SearchActivity : AppCompatActivity(), OnItemClickRecycler {
         locationManager = this.getSystemService(Context.LOCATION_SERVICE) as LocationManager
         gpsActive = locationManager.isProviderEnabled(LocationManager.GPS_PROVIDER)
 
-        recycler()
-        observer()
+        recyclerCities()
+        recyclerHistory()
+        observerCities()
+        observerHistory()
         searchCitiesFilter()
         listener()
 
@@ -70,14 +82,21 @@ class SearchActivity : AppCompatActivity(), OnItemClickRecycler {
         else toastMessage("Gps não ativado!")
     }
 
-    private fun recycler() {
+    private fun recyclerCities() {
         val recycler = binding.recyclerCidades
         recycler.layoutManager = LinearLayoutManager(this)
-        adapter = CidadesAdapter(this)
-        recycler.adapter = adapter
+        adapterCities = CitiesAdapter(this)
+        recycler.adapter = adapterCities
     }
 
-    private fun observer() {
+    private fun recyclerHistory() {
+        val recycler = binding.recyclerHistory
+        recycler.layoutManager = LinearLayoutManager(this)
+        adapterHistory = AdapterHistory(this, this)
+        recycler.adapter = adapterHistory
+    }
+
+    private fun observerCities() {
 
         val remote = RetrofitClient().createService(ApiServiceSearch::class.java)
         val call: Call<ArrayList<Cidades>> = remote.cities()
@@ -86,19 +105,32 @@ class SearchActivity : AppCompatActivity(), OnItemClickRecycler {
                 call: Call<ArrayList<Cidades>>,
                 res: Response<ArrayList<Cidades>>
             ) {
-                res.body()?.let { adapter.updateCidades(it) }
+                res.body()?.let { adapterCities.updateCidades(it) }
             }
             override fun onFailure(call: Call<ArrayList<Cidades>>, t: Throwable) {}
         })
 
     }
 
+    private fun observerHistory(){
+        viewModelSearch.getHistory()
+        viewModelSearch.listHistory.observe(this){
+            if (it.size != 0 && it != null){
+                binding.textViewHistoryHere.visibility = View.INVISIBLE
+                adapterHistory.updateHistory(it)
+            }
+        }
+    }
+
     private fun searchCitiesFilter() {
 
         binding.editTextSearch.addTextChangedListener(object : TextWatcher {
             override fun onTextChanged(s: CharSequence, start: Int, before: Int, count: Int) {
-                adapter.filter.filter(s.toString())
-                binding.buttomLocalizacao.visibility = View.INVISIBLE
+                adapterCities.filter.filter(s.toString())
+                binding.recyclerCidades.visibility = View.VISIBLE
+                binding.bottomLocation.visibility = View.INVISIBLE
+                binding.recyclerHistory.visibility = View.INVISIBLE
+                binding.textViewHistoryHere.visibility = View.INVISIBLE
             }
             override fun beforeTextChanged(s: CharSequence, start: Int, count: Int, after: Int) {}
             override fun afterTextChanged(s: Editable) {}
@@ -106,12 +138,13 @@ class SearchActivity : AppCompatActivity(), OnItemClickRecycler {
     }
 
     override fun clickCity(id: String, city: String, state: String) {
+        viewModelSearch.saveHistory(CityData(0, id, city, state))
         repositoryCities.storeCity(id, city, state)
         finish()
     }
 
     private fun listener(){
-        binding.buttomLocalizacao.setOnClickListener { getPermission() }
+        binding.bottomLocation.setOnClickListener { getPermission() }
         binding.backActivity.setOnClickListener { finish() }
     }
 
@@ -204,6 +237,7 @@ class SearchActivity : AppCompatActivity(), OnItemClickRecycler {
             val id = "0"
 
             repositoryCities.storeCity(id, city, state)
+            repositoryHistory.saveCity(CityData(0, id, city, state))
             finish()
 
         } catch (e: Exception) {
@@ -237,7 +271,17 @@ class SearchActivity : AppCompatActivity(), OnItemClickRecycler {
             .show()
     }
 
+    override fun clickItemCity(item: CityData, position: Int) {
+
+    }
+
+    override fun clickDeleteCity(item: CityData, position: Int) {
+        viewModelSearch.deleteHistory(item.id)
+        adapterHistory.updateRemoveItem(position)
+    }
+
     private fun toastMessage(message: String){
         Toast.makeText(this, message, Toast.LENGTH_SHORT).show()
     }
+
 }

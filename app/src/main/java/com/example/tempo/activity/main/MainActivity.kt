@@ -6,8 +6,8 @@ import android.view.View
 import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
 import androidx.recyclerview.widget.LinearLayoutManager
-import com.example.tempo.activity.adapter.MainAdapter
 import com.example.tempo.activity.search.SearchActivity
+import com.example.tempo.adapter.MainAdapter
 import com.example.tempo.databinding.ActivityMainBinding
 import com.example.tempo.remote.*
 import com.example.tempo.repository.ResultRequest
@@ -82,19 +82,6 @@ class MainActivity : AppCompatActivity() {
         adapter = MainAdapter()
         recycler.layoutManager = LinearLayoutManager(this)
         recycler.adapter = adapter
-    }
-
-    private fun hideView(){
-        binding.run {
-            progressMain.visibility = View.VISIBLE
-            textviewCidade.visibility = View.INVISIBLE
-            textviewDate.visibility = View.INVISIBLE
-            textViewTemperatura.visibility = View.INVISIBLE
-            textCelsius.visibility = View.INVISIBLE
-            textviewCeu.visibility = View.INVISIBLE
-            textviewMaxmin.visibility = View.INVISIBLE
-            textviewTermica.visibility = View.INVISIBLE
-        }
     }
 
     private fun observerInfo(id: String) {
