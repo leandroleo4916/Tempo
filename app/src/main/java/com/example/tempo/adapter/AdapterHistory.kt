@@ -50,7 +50,7 @@ class AdapterHistory (private val clickItem: OnItemClickItemCity,
         override fun onClick(view: View?) {
             val position = adapterPosition
             when (view){
-                itemCity -> clickItem.clickItemCity(listHistory[position], position)
+                itemCity -> clickItem.clickItemCity(listHistory[position])
                 delete -> clickDelete.clickDeleteCity(listHistory[position], position)
             }
         }

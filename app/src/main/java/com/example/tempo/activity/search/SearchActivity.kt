@@ -234,15 +234,18 @@ class SearchActivity : AppCompatActivity(), OnItemClickRecycler, OnItemClickItem
             val cityDiv = cityAndState.split(" - ")
             val city = cityDiv[0].trim()
             val state = cityDiv[1].trim()
-            val id = "0"
 
-            repositoryCities.storeCity(id, city, state)
-            repositoryHistory.saveCity(CityData(0, id, city, state))
-            finish()
+            saveCityAndFinishActivity("0", city, state)
 
         } catch (e: Exception) {
             toastMessage("Não conseguimos obter o endereço!")
         }
+    }
+
+    private fun saveCityAndFinishActivity(id: String, city: String, state: String){
+        repositoryCities.storeCity(id, city, state)
+        repositoryHistory.saveCity(CityData(0, id, city, state))
+        finish()
     }
 
     private fun activeGpsDialog() {
@@ -271,8 +274,8 @@ class SearchActivity : AppCompatActivity(), OnItemClickRecycler, OnItemClickItem
             .show()
     }
 
-    override fun clickItemCity(item: CityData, position: Int) {
-
+    override fun clickItemCity(item: CityData) {
+        saveCityAndFinishActivity(item.idcity, item.city, item.state)
     }
 
     override fun clickDeleteCity(item: CityData, position: Int) {
