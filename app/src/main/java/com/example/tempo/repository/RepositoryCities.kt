@@ -1,15 +1,23 @@
 package com.example.tempo.repository
 
-import com.example.tempo.utils.ConstantsCidades
-import com.example.tempo.utils.SecurityPreferences
+import com.example.tempo.constants.ConstantsCities
+import com.example.tempo.security.SecurityPreferences
 
 class RepositoryCities(private val securityPreferences: SecurityPreferences) {
 
-    fun storeCity(id: String, city: String, state: String) {
+    fun storeCity(id: String, city: String, state: String, latitude: String, longitude: String) {
         securityPreferences.run {
-            storeString(ConstantsCidades.CIDADES.ID, id)
-            storeString(ConstantsCidades.CIDADES.NOME, city)
-            storeString(ConstantsCidades.CIDADES.UF, state)
+            storeString(ConstantsCities.CITY.ID, id)
+            storeString(ConstantsCities.CITY.NOME, city)
+            storeString(ConstantsCities.CITY.UF, state)
+            storeString(ConstantsCities.CITY.LAT, latitude)
+            storeString(ConstantsCities.CITY.LON, longitude)
+        }
+    }
+
+    fun storeValueKey(key: String) {
+        securityPreferences.run {
+            storeString("key", key)
         }
     }
 }

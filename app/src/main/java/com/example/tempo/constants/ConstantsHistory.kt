@@ -9,6 +9,8 @@ class ConstantsHistory private constructor(){
             const val IDCITY = "idcity"
             const val CITY = "city"
             const val STATE = "state"
+            const val LAT = "latitude"
+            const val LON = "longitude"
         }
     }
 }

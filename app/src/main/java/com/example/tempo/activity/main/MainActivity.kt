@@ -1,5 +1,6 @@
 package com.example.tempo.activity.main
 
+import WeatherDataClass
 import android.content.Intent
 import android.os.Bundle
 import android.view.View
@@ -8,43 +9,43 @@ import androidx.appcompat.app.AppCompatActivity
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.example.tempo.activity.search.SearchActivity
 import com.example.tempo.adapter.MainAdapter
+import com.example.tempo.constants.ConstantsCities
 import com.example.tempo.databinding.ActivityMainBinding
-import com.example.tempo.remote.*
+import com.example.tempo.repository.RepositoryCities
 import com.example.tempo.repository.ResultRequest
+import com.example.tempo.security.SecurityPreferences
 import com.example.tempo.utils.CaptureDateCurrent
-import com.example.tempo.utils.ConstantsCidades
 import com.example.tempo.utils.ConverterPhoto
-import com.example.tempo.utils.SecurityPreferences
 import org.koin.android.ext.android.inject
 import org.koin.androidx.viewmodel.ext.android.viewModel
-import retrofit2.Call
-import retrofit2.Callback
-import retrofit2.Response
 
 class MainActivity : AppCompatActivity() {
 
     private val binding by lazy { ActivityMainBinding.inflate(layoutInflater) }
     private val securityPreferences: SecurityPreferences by inject()
-    private val weatherData: WeatherViewModel by viewModel()
+    private val repositoryCities: RepositoryCities by inject()
+    private val weatherViewModel: WeatherViewModel by viewModel()
     private val captureDateCurrent = CaptureDateCurrent()
     private val converterPhoto = ConverterPhoto()
     private lateinit var adapter: MainAdapter
-    private val list = ArrayList<InfoCidade?>()
     private val dateString = captureDateCurrent.captureDateCurrent()
     private lateinit var id: String
     private lateinit var city: String
     private lateinit var uf: String
+    private lateinit var latitude: String
+    private lateinit var longitude: String
+    private lateinit var key: String
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(binding.root)
 
+        val repositoryCities: RepositoryCities by inject()
+
         searchCity()
 
-        if (city.isEmpty()){
-            openActivity()
-        }
-        else{
+        if (city.isEmpty()) openActivity()
+        else {
             recycler()
             observer()
             listener()
@@ -52,13 +53,18 @@ class MainActivity : AppCompatActivity() {
     }
 
     private fun searchCity(){
-        id = securityPreferences.getStoredString(ConstantsCidades.CIDADES.ID)
-        city = securityPreferences.getStoredString(ConstantsCidades.CIDADES.NOME)
-        uf = securityPreferences.getStoredString(ConstantsCidades.CIDADES.UF)
+        id = securityPreferences.getStoredString(ConstantsCities.CITY.ID)
+        city = securityPreferences.getStoredString(ConstantsCities.CITY.NOME)
+        uf = securityPreferences.getStoredString(ConstantsCities.CITY.UF)
+        latitude = securityPreferences.getStoredString(ConstantsCities.CITY.LAT)
+        longitude = securityPreferences.getStoredString(ConstantsCities.CITY.LON)
+        key = securityPreferences.getStoredString("key")
     }
 
     private fun observer() {
-        weatherData.searchDataWeather(city).observe(this){
+        val latitude = "-23.665327"
+        val longitude = "-46.494673"
+        weatherViewModel.searchDataWeather(latitude, longitude).observe(this){
             it?.let { result ->
                 when (result) {
                     is ResultRequest.Success -> {
@@ -84,82 +90,29 @@ class MainActivity : AppCompatActivity() {
         recycler.adapter = adapter
     }
 
-    private fun observerInfo(id: String) {
-
-        val remote = RetrofitClientMain().createService(ApiServiceMain::class.java)
-        val call: Call<Map<String, Map<String, Periodo>>> = remote.tempo(id)
-        call.enqueue(object : Callback<Map<String, Map<String, Periodo>>> {
-            override fun onResponse(
-                call: Call<Map<String, Map<String, Periodo>>>,
-                response: Response<Map<String, Map<String, Periodo>>>
-            ) {
-                //val manha = response.body()?.get(id)?.get(dateString)?.manha
-                //addElementView(manha)
-                //list.add(response.body()?.get(id)?.keys)
-                //observerInfoAdapter(id)
-            }
-
-            override fun onFailure(call: Call<Map<String, Map<String, Periodo>>>, t: Throwable) {
-                TODO("Not yet implemented")
-            }
-        })
-    }
-
-    private fun observerInfoAdapter(id: String) {
-
-        val remote = RetrofitClientMain().createService(ApiServiceRecycler::class.java)
-        val call: Call<Map<String, Map<String, InfoCidade>>> = remote.tempoRecycler(id)
-        call.enqueue(object : Callback<Map<String, Map<String, InfoCidade>>> {
-            override fun onResponse(
-                call: Call<Map<String, Map<String, InfoCidade>>>,
-                response: Response<Map<String, Map<String, InfoCidade>>>
-            ) {
-                list.add(response.body()?.get(id)?.get(dateString))
-                adapter.updateMain(arrayListOf(response.body()?.get(id)?.get(dateString)))
-            }
-
-            override fun onFailure(call: Call<Map<String, Map<String, InfoCidade>>>, t: Throwable) {
-                TODO("Not yet implemented")
-            }
-        })
-    }
-
-    private fun addElementView(res: InfoCidade?) {
-
-        val dateDay = captureDateCurrent.captureDateDay()
-        val hora = captureDateCurrent.captureHoraCurrent()
-
-        binding.run {
-            progressMain.visibility = View.GONE
-            textviewCidade.text = res?.entidade+" - "+res?.uf
-            val tempMax = res?.tempMax
-            val tempMin = res?.tempMin
-            textviewCeu.text = res?.resumo
-            textviewDate.text = "$dateDay - $hora"
-            textviewMaxmin.text = "$tempMax"+"º /"+"$tempMin"+"º"
-        }
-    }
-
     private fun addElementViewTime(res: WeatherDataClass) {
 
         val dateDay = captureDateCurrent.captureDateDay()
         val hora = captureDateCurrent.captureHoraCurrent()
 
         binding.run {
-            val time = res.main.temp.toInt()
             progressMain.visibility = View.GONE
-            val max = res.main.tempMax.toInt()
-            var min = res.main.tempMin
-            if (min > min.toInt()+0.5) min += 1
+            var fell = res.latitude
+            var time = res.currentWeather.temperature
+            //var max = res.main.tempMax
+            //var min = res.main.tempMin
+            if (fell > fell.toInt()+0.5) fell += 1
+            if (time > time.toInt()+0.5) time += 1
+            //if (max > max.toInt()+0.5) max += 1
+            //if (min > min.toInt()+0.5) min += 1
 
             textviewCidade.text = "$city"+" - "+"$uf"
-            textviewCeu.text = res.weather[0].description
+            //textviewCeu.text = res.weather[0].description
             textviewDate.text = "$dateDay - $hora"
-            textviewHumidity.text = "Humidade ${res.main.humidity}%"
-            textviewTermica.text = "Sessação térmica de ${res.main.feelsLike.toInt()}"+"º"
-            textViewTemperatura.text = time.toString()
-            textviewMaxmin.text = "${res.main.tempMax.toInt()}"+"º /"+"${res.main.tempMax.toInt()}"+"º"
-            textviewMaxmin.text = "$max"+"º/"+"${min.toInt()}"+"º"
+            //textviewHumidity.text = "Humidade ${res.main.humidity}%"
+            textviewTermica.text = "Sessação térmica de ${fell.toInt()}"+"º"
+            textViewTemperatura.text = "${time.toInt()}"
+            //textviewMaxmin.text = "${max.toInt()}"+"º/"+"${min.toInt()}"+"º"
 
             progressMain.visibility = View.GONE
             textviewCidade.visibility = View.VISIBLE
@@ -169,6 +122,7 @@ class MainActivity : AppCompatActivity() {
             textviewCeu.visibility = View.VISIBLE
             textviewMaxmin.visibility = View.VISIBLE
             textviewTermica.visibility = View.VISIBLE
+            textviewHumidity.visibility = View.VISIBLE
         }
     }
 

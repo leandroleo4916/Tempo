@@ -1,4 +1,4 @@
-package com.example.tempo.remote
+package com.example.tempo.dataclass
 
 import com.google.gson.annotations.SerializedName
 

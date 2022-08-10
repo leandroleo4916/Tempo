@@ -14,11 +14,9 @@ class SearchViewModel(private val repository: RepositoryHistory) : ViewModel() {
     }
 
     fun saveHistory(city: CityData) {
-        repository.saveCity(city)
+        val resCity = repository.getCityExist()
+        if (!resCity) repository.saveCity(city)
     }
 
-    fun deleteHistory(id: Int) {
-        return repository.removeHistory(id)
-    }
-
+    fun deleteHistory(id: Int) = repository.removeHistory(id)
 }

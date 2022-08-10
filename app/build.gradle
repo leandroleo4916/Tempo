@@ -59,14 +59,17 @@ dependencies {
     implementation 'com.squareup.okhttp3:logging-interceptor:4.9.0'
     implementation 'com.squareup.retrofit2:retrofit:2.9.0'
 
-    def koin_version = '2.1.1'
-    implementation "org.koin:koin-android:$koin_version"
-    implementation "org.koin:koin-androidx-scope:$koin_version"
-    implementation "org.koin:koin-androidx-viewmodel:$koin_version"
+    // Injection Koin
+    implementation "org.koin:koin-android:2.1.5"
+    implementation "org.koin:koin-androidx-scope:2.1.5"
+    implementation "org.koin:koin-androidx-viewmodel:2.1.5"
 
     implementation 'com.google.android.gms:play-services-auth:20.2.0'
     implementation 'com.google.android.gms:play-services-location:19.0.1'
     implementation 'org.jetbrains.kotlinx:kotlinx-serialization-json:1.2.2'
     implementation "org.jsoup:jsoup:1.10.2"
+
+    implementation "org.koin:koin-android:2.0.1"
+    testImplementation "org.koin:koin-test:2.0.1"
 
 }

@@ -22,6 +22,8 @@ class RepositoryHistory(dataBaseHistory: DataBaseHistory) {
                 put(ConstantsHistory.HISTORY.COLUMNS.IDCITY, history.idcity)
                 put(ConstantsHistory.HISTORY.COLUMNS.CITY, history.city)
                 put(ConstantsHistory.HISTORY.COLUMNS.STATE, history.state)
+                put(ConstantsHistory.HISTORY.COLUMNS.LAT, history.latitude)
+                put(ConstantsHistory.HISTORY.COLUMNS.LON, history.longitude)
             }
             dbWrite.insert(tableName, null, insertValues)
 
@@ -37,7 +39,9 @@ class RepositoryHistory(dataBaseHistory: DataBaseHistory) {
                     ConstantsHistory.HISTORY.COLUMNS.ID,
                     ConstantsHistory.HISTORY.COLUMNS.IDCITY,
                     ConstantsHistory.HISTORY.COLUMNS.CITY,
-                    ConstantsHistory.HISTORY.COLUMNS.STATE)
+                    ConstantsHistory.HISTORY.COLUMNS.STATE,
+                    ConstantsHistory.HISTORY.COLUMNS.LAT,
+                    ConstantsHistory.HISTORY.COLUMNS.LON)
 
             val orderBy = ConstantsHistory.HISTORY.COLUMNS.ID
 
@@ -55,8 +59,12 @@ class RepositoryHistory(dataBaseHistory: DataBaseHistory) {
                             cursor.getColumnIndex(ConstantsHistory.HISTORY.COLUMNS.CITY))
                     val state = cursor.getString(
                             cursor.getColumnIndex(ConstantsHistory.HISTORY.COLUMNS.STATE))
+                    val latitude = cursor.getString(
+                            cursor.getColumnIndex(ConstantsHistory.HISTORY.COLUMNS.LAT))
+                    val longitude = cursor.getString(
+                            cursor.getColumnIndex(ConstantsHistory.HISTORY.COLUMNS.LON))
 
-                    list.add(CityData(id, idCity, city, state))
+                    list.add(CityData(id, idCity, city, state, latitude, longitude))
                 }
             }
             cursor.close()
@@ -76,6 +84,20 @@ class RepositoryHistory(dataBaseHistory: DataBaseHistory) {
             dbWrite.delete(tableName, selection, args)
 
         } catch (e: Exception) {  }
+    }
+
+    fun getCityExist(): Boolean {
+
+       return try {
+            val projection = arrayOf(ConstantsHistory.HISTORY.COLUMNS.CITY)
+            val orderBy = ConstantsHistory.HISTORY.COLUMNS.CITY
+
+            cursor = dbRead.query (tableName, projection, null, null,
+                null, null, orderBy)
+
+            cursor.count > 0
+
+        } catch (e: Exception) { false }
     }
 
     fun removeAll(id: Int) {

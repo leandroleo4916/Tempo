@@ -22,12 +22,13 @@ import androidx.recyclerview.widget.LinearLayoutManager
 import com.example.tempo.adapter.AdapterHistory
 import com.example.tempo.adapter.CitiesAdapter
 import com.example.tempo.databinding.ActivitySearchBinding
+import com.example.tempo.dataclass.Cidades
 import com.example.tempo.dataclass.CityData
+import com.example.tempo.dataclass.Coordinates
 import com.example.tempo.interfaces.OnItemClickDeleteCity
 import com.example.tempo.interfaces.OnItemClickItemCity
 import com.example.tempo.interfaces.OnItemClickRecycler
 import com.example.tempo.remote.ApiServiceSearch
-import com.example.tempo.remote.Cidades
 import com.example.tempo.remote.RetrofitClient
 import com.example.tempo.repository.RepositoryCities
 import com.example.tempo.repository.RepositoryHistory
@@ -38,7 +39,6 @@ import org.koin.androidx.viewmodel.ext.android.viewModel
 import retrofit2.Call
 import retrofit2.Callback
 import retrofit2.Response
-import java.util.*
 import kotlin.properties.Delegates
 
 class SearchActivity : AppCompatActivity(), OnItemClickRecycler, OnItemClickItemCity,
@@ -56,6 +56,7 @@ class SearchActivity : AppCompatActivity(), OnItemClickRecycler, OnItemClickItem
     private var latitude: Double = 0.0
     private var longitude: Double = 0.0
     private var gpsActive by Delegates.notNull<Boolean>()
+    private lateinit var geocoder: Geocoder
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -76,9 +77,7 @@ class SearchActivity : AppCompatActivity(), OnItemClickRecycler, OnItemClickItem
     override fun onRestart() {
         super.onRestart()
         gpsActive = locationManager.isProviderEnabled(LocationManager.GPS_PROVIDER)
-        if (gpsActive) {
-            getPosition()
-        }
+        if (gpsActive) getPosition()
         else toastMessage("Gps não ativado!")
     }
 
@@ -101,11 +100,13 @@ class SearchActivity : AppCompatActivity(), OnItemClickRecycler, OnItemClickItem
         val remote = RetrofitClient().createService(ApiServiceSearch::class.java)
         val call: Call<ArrayList<Cidades>> = remote.cities()
         call.enqueue(object : Callback<ArrayList<Cidades>> {
-            override fun onResponse(
+            override fun onResponse (
                 call: Call<ArrayList<Cidades>>,
-                res: Response<ArrayList<Cidades>>
-            ) {
-                res.body()?.let { adapterCities.updateCidades(it) }
+                res: Response<ArrayList<Cidades>>)
+            {
+                res.body()?.let {
+                    adapterCities.updateCidades(it)
+                }
             }
             override fun onFailure(call: Call<ArrayList<Cidades>>, t: Throwable) {}
         })
@@ -138,8 +139,8 @@ class SearchActivity : AppCompatActivity(), OnItemClickRecycler, OnItemClickItem
     }
 
     override fun clickCity(id: String, city: String, state: String) {
-        viewModelSearch.saveHistory(CityData(0, id, city, state))
-        repositoryCities.storeCity(id, city, state)
+        viewModelSearch.saveHistory(CityData(0, id, city, state, "", ""))
+        repositoryCities.storeCity(id, city, state, "", "")
         finish()
     }
 
@@ -184,9 +185,7 @@ class SearchActivity : AppCompatActivity(), OnItemClickRecycler, OnItemClickItem
                     longitude = it.longitude
                     getAddress()
                 }
-                else {
-                    toastMessage("Não foi possível obter sua localização!")
-                }
+                else toastMessage("Não foi possível obter sua localização!")
             }
             .addOnFailureListener {
                 toastMessage("Não foi possível obter sua localização!")
@@ -225,9 +224,10 @@ class SearchActivity : AppCompatActivity(), OnItemClickRecycler, OnItemClickItem
 
     private fun getAddress(){
 
-        val geocode = Geocoder(applicationContext)
+        geocoder = Geocoder(applicationContext)
+
         try {
-            val addresses: List<Address> = geocode.getFromLocation(latitude, longitude, 1)
+            val addresses: List<Address> = geocoder.getFromLocation(latitude, longitude, 1)
             val address = addresses[0].getAddressLine(0)
             val ind = address.split(",")
             val cityAndState = ind[2]
@@ -243,9 +243,21 @@ class SearchActivity : AppCompatActivity(), OnItemClickRecycler, OnItemClickItem
     }
 
     private fun saveCityAndFinishActivity(id: String, city: String, state: String){
-        repositoryCities.storeCity(id, city, state)
-        repositoryHistory.saveCity(CityData(0, id, city, state))
+
+        val latLong = searchLatAndLong(city)
+
+        repositoryCities.storeCity(id, city, state, latLong.latitude, latLong.longitude)
+        repositoryHistory.saveCity(CityData(0, id, city, state, latLong.latitude, latLong.longitude))
         finish()
+    }
+
+    private fun searchLatAndLong(city: String): Coordinates{
+        val addresses: List<Address> = geocoder.getFromLocationName(city, 1)
+        val address = addresses[0]
+        val latitude = address.latitude.toString()
+        val longitude = address.longitude.toString()
+
+        return Coordinates(latitude, longitude)
     }
 
     private fun activeGpsDialog() {

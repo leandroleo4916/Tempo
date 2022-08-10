@@ -8,59 +8,52 @@ import android.widget.Filterable
 import android.widget.TextView
 import androidx.recyclerview.widget.RecyclerView
 import com.example.tempo.R
+import com.example.tempo.dataclass.Cidades
 import com.example.tempo.interfaces.OnItemClickRecycler
-import com.example.tempo.remote.Cidades
 import java.util.*
-import kotlin.collections.ArrayList
 
 class CitiesAdapter(private val listener: OnItemClickRecycler):
-    RecyclerView.Adapter<CitiesAdapter.CidadesViewHolder>(), Filterable {
+    RecyclerView.Adapter<CitiesAdapter.CitiesViewHolder>(), Filterable {
 
     private var data = mutableListOf<Cidades>()
-    private var listCidades = mutableListOf<Cidades>()
+    private var listCities = mutableListOf<Cidades>()
     private var filter: ListItemFilter = ListItemFilter()
 
-    override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): CidadesViewHolder {
+    override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): CitiesViewHolder {
         val item = LayoutInflater
             .from(parent.context)
             .inflate(R.layout.recycler_cidades, parent, false)
 
-        return CidadesViewHolder(item)
+        return CitiesViewHolder(item)
     }
 
-    override fun onBindViewHolder(holder: CidadesViewHolder, position: Int) {
-
-        val employee = listCidades[position]
+    override fun onBindViewHolder(holder: CitiesViewHolder, position: Int) {
+        val employee = listCities[position]
         holder.run { bind(employee.nome, employee.microrregiao.mesorregiao.uf.nome) }
-
     }
 
-    override fun getItemCount(): Int {
-        return listCidades.size
-    }
+    override fun getItemCount() = listCities.size
 
-    override fun getFilter(): Filter {
-        return filter
-    }
+    override fun getFilter() = filter
 
-    inner class CidadesViewHolder (itemView: View): RecyclerView.ViewHolder(itemView),
+    inner class CitiesViewHolder (itemView: View): RecyclerView.ViewHolder(itemView),
         View.OnClickListener {
 
         init { itemView.setOnClickListener(this) }
 
         override fun onClick(view: View?) {
             val position = adapterPosition
-            val id = listCidades[position].id
-            val city = listCidades[position].nome
-            val state = listCidades[position].microrregiao.mesorregiao.uf.sigla
+            val id = listCities[position].id
+            val city = listCities[position].nome
+            val state = listCities[position].microrregiao.mesorregiao.uf.sigla
 
             when(view){ itemView -> listener.clickCity(id, city, state) }
         }
 
-        fun bind(cidade: String, estado: String){
+        fun bind(city: String, state: String){
             itemView.run {
-                findViewById<TextView>(R.id.text_cidade).text = cidade
-                findViewById<TextView>(R.id.text_estado).text = estado
+                findViewById<TextView>(R.id.text_cidade).text = city
+                findViewById<TextView>(R.id.text_estado).text = state
             }
         }
     }
@@ -71,7 +64,7 @@ class CitiesAdapter(private val listener: OnItemClickRecycler):
         notifyDataSetChanged()
     }
 
-    private inner class ListItemFilter : Filter() {
+    inner class ListItemFilter : Filter() {
 
         override fun performFiltering(constraint: CharSequence?): FilterResults {
 
@@ -80,12 +73,14 @@ class CitiesAdapter(private val listener: OnItemClickRecycler):
             if (constraint != null && constraint != "") {
 
                 val list = ArrayList<Cidades>()
-                for (cidade in data) {
-                    if (cidade.nome.toLowerCase(Locale.ROOT)
-                            .contains(constraint.toString()
-                            .toLowerCase(Locale.ROOT))
+                for (city in data) {
+                    if (city.nome.lowercase(Locale.ROOT)
+                            .contains(
+                                constraint.toString()
+                                    .lowercase(Locale.ROOT)
+                            )
                     ) {
-                        list.add(cidade)
+                        list.add(city)
                         when (list.size){ 10 -> break }
                     }
                 }
@@ -93,9 +88,9 @@ class CitiesAdapter(private val listener: OnItemClickRecycler):
                 filterResults.values = list
             }
             else {
-                listCidades.removeAll(listCidades)
-                filterResults.count = listCidades.size
-                filterResults.values = listCidades
+                listCities.removeAll(listCities)
+                filterResults.count = listCities.size
+                filterResults.values = listCities
             }
             return filterResults
         }
@@ -103,9 +98,9 @@ class CitiesAdapter(private val listener: OnItemClickRecycler):
         override fun publishResults(constraint: CharSequence, results: FilterResults) {
 
             if (results.values is ArrayList<*>) {
-                listCidades = results.values as MutableList<Cidades>
-                when { listCidades.isEmpty() -> {
-                    listCidades = results.values as MutableList<Cidades>
+                listCities = results.values as MutableList<Cidades>
+                when { listCities.isEmpty() -> {
+                    listCities = results.values as MutableList<Cidades>
                 } }
             }
             notifyDataSetChanged()

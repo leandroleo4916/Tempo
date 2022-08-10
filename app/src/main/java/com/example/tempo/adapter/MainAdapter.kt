@@ -6,7 +6,7 @@ import android.view.ViewGroup
 import android.widget.TextView
 import androidx.recyclerview.widget.RecyclerView
 import com.example.tempo.R
-import com.example.tempo.remote.InfoCidade
+import com.example.tempo.dataclass.InfoCidade
 
 class MainAdapter: RecyclerView.Adapter<MainAdapter.MainViewHolder>() {
 

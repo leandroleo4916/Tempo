@@ -1,7 +1,7 @@
 package com.example.tempo.repository
 
 import androidx.lifecycle.liveData
-import com.example.tempo.remote.ApiServiceEmit
+import com.example.tempo.remote.ApiServiceTime
 import java.net.ConnectException
 
 sealed class ResultRequest<out R> {
@@ -10,11 +10,11 @@ sealed class ResultRequest<out R> {
     data class ErrorConnection(val exception: Exception) : ResultRequest<Nothing>()
 }
 
-class WeatherRepository(private val service: ApiServiceEmit) {
+class WeatherRepository(private val service: ApiServiceTime) {
 
-    fun weatherData(city: String) = liveData {
+    fun weatherData(latitude: String, longitude: String) = liveData {
         try {
-            val request = service.getWeather(city)
+            val request = service.getWeather(latitude, longitude)
             if(request.isSuccessful){
                 emit(ResultRequest.Success(dado = request.body()))
             } else {

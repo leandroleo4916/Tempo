@@ -3,11 +3,11 @@ package com.example.tempo.di
 import com.example.tempo.activity.main.WeatherViewModel
 import com.example.tempo.activity.search.SearchViewModel
 import com.example.tempo.dbhistory.DataBaseHistory
-import com.example.tempo.remote.ApiServiceEmit
+import com.example.tempo.remote.ApiServiceTime
 import com.example.tempo.repository.RepositoryCities
 import com.example.tempo.repository.RepositoryHistory
 import com.example.tempo.repository.WeatherRepository
-import com.example.tempo.utils.SecurityPreferences
+import com.example.tempo.security.SecurityPreferences
 import okhttp3.OkHttpClient
 import okhttp3.logging.HttpLoggingInterceptor
 import org.koin.androidx.viewmodel.dsl.viewModel
@@ -32,12 +32,8 @@ val retrofitModule = module {
             .addInterceptor(logging)
             .build()
     }
-    single<ApiServiceEmit> { get<Retrofit>().create(ApiServiceEmit::class.java) }
+    single<ApiServiceTime> { get<Retrofit>().create(ApiServiceTime::class.java) }
 }
-
-val service = module { single {
-    single<ApiServiceEmit> { get<Retrofit>().create(ApiServiceEmit::class.java) }
-} }
 val weatherRepository = module { single { WeatherRepository(get()) } }
 val cityRepository = module { single { RepositoryCities(get()) } }
 val repositoryHistory = module { single { RepositoryHistory(get()) } }
@@ -47,6 +43,6 @@ val historyViewModel = module { viewModel { SearchViewModel(get()) } }
 val dataBase = module { single { DataBaseHistory(get()) } }
 
 val appModules = listOf(
-    retrofitModule, securityPreferences, service, weatherRepository,
+    retrofitModule, securityPreferences, weatherRepository,
     weatherViewModel, cityRepository, dataBase, repositoryHistory, historyViewModel
 )

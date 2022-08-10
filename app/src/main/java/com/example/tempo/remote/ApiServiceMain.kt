@@ -1,6 +1,8 @@
 package com.example.tempo.remote
 
-import com.example.tempo.utils.Constants.API_KEY
+import WeatherDataClass
+import com.example.tempo.dataclass.InfoCidade
+import com.example.tempo.dataclass.Periodo
 import retrofit2.Call
 import retrofit2.Response
 import retrofit2.http.GET
@@ -18,13 +20,13 @@ interface ApiServiceRecycler {
         @Path("id") id: String): Call<Map<String, Map<String, InfoCidade>>>
 }
 
-interface ApiServiceEmit {
-    @GET("https://api.openweathermap.org/data/2.5/weather")
+interface ApiServiceTime {
+    @GET("https://api.open-meteo.com/v1/forecast?")
     suspend fun getWeather(
-        @Query("q") city: String,
-        @Query("appid") key: String = API_KEY,
-        @Query("units") units: String = "metric",
-        @Query("lang") lang: String = "pt_br"
+        @Query("latitude") latitude: String,
+        @Query("longitude") longitude: String,
+        @Query("hourly") hourly: String = "temperature_2m",
+        @Query("current_weather") current_weather: String = "true"
     ): Response<WeatherDataClass>
 }
 
