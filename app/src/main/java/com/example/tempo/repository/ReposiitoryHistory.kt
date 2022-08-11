@@ -19,7 +19,7 @@ class RepositoryHistory(dataBaseHistory: DataBaseHistory) {
         try {
             val insertValues = ContentValues()
             insertValues.run {
-                put(ConstantsHistory.HISTORY.COLUMNS.IDCITY, history.idcity)
+                put(ConstantsHistory.HISTORY.COLUMNS.IDCITY, history.idCity)
                 put(ConstantsHistory.HISTORY.COLUMNS.CITY, history.city)
                 put(ConstantsHistory.HISTORY.COLUMNS.STATE, history.state)
                 put(ConstantsHistory.HISTORY.COLUMNS.LAT, history.latitude)
@@ -86,18 +86,20 @@ class RepositoryHistory(dataBaseHistory: DataBaseHistory) {
         } catch (e: Exception) {  }
     }
 
-    fun getCityExist(): Boolean {
+    fun getCityExist(city: String): Boolean {
 
        return try {
-            val projection = arrayOf(ConstantsHistory.HISTORY.COLUMNS.CITY)
-            val orderBy = ConstantsHistory.HISTORY.COLUMNS.CITY
+           val projection = arrayOf(ConstantsHistory.HISTORY.COLUMNS.CITY)
+           val selection = ConstantsHistory.HISTORY.COLUMNS.CITY + " = ?"
+           val args = arrayOf(city)
 
-            cursor = dbRead.query (tableName, projection, null, null,
-                null, null, orderBy)
+           cursor = dbRead.query (tableName, projection, selection, args,
+               null, null, null)
+           return cursor.count > 0
 
-            cursor.count > 0
-
-        } catch (e: Exception) { false }
+        } catch (e: Exception) {
+            false
+        }
     }
 
     fun removeAll(id: Int) {

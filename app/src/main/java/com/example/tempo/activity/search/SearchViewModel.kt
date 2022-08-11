@@ -9,12 +9,10 @@ class SearchViewModel(private val repository: RepositoryHistory) : ViewModel() {
 
     val listHistory = MutableLiveData<ArrayList<CityData>>()
 
-    fun getHistory() {
-        listHistory.value = repository.historyList()
-    }
+    fun getHistory() { listHistory.value = repository.historyList() }
 
     fun saveHistory(city: CityData) {
-        val resCity = repository.getCityExist()
+        val resCity = repository.getCityExist(city.city)
         if (!resCity) repository.saveCity(city)
     }
 

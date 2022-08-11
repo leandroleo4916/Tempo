@@ -9,6 +9,7 @@ import android.widget.TextView
 import androidx.recyclerview.widget.RecyclerView
 import com.example.tempo.R
 import com.example.tempo.dataclass.Cidades
+import com.example.tempo.dataclass.CityData
 import com.example.tempo.interfaces.OnItemClickRecycler
 import java.util.*
 
@@ -47,7 +48,7 @@ class CitiesAdapter(private val listener: OnItemClickRecycler):
             val city = listCities[position].nome
             val state = listCities[position].microrregiao.mesorregiao.uf.sigla
 
-            when(view){ itemView -> listener.clickCity(id, city, state) }
+            when(view){ itemView -> listener.clickCity(CityData(0, id, city, state, "", "")) }
         }
 
         fun bind(city: String, state: String){

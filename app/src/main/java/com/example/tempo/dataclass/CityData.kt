@@ -2,7 +2,7 @@ package com.example.tempo.dataclass
 
 data class CityData(
         val id: Int,
-        val idcity: String,
+        val idCity: String,
         val city: String,
         val state: String,
         val latitude: String,

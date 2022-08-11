@@ -25,13 +25,12 @@ import com.example.tempo.databinding.ActivitySearchBinding
 import com.example.tempo.dataclass.Cidades
 import com.example.tempo.dataclass.CityData
 import com.example.tempo.dataclass.Coordinates
+import com.example.tempo.interfaces.OnClickItemHistoryCity
 import com.example.tempo.interfaces.OnItemClickDeleteCity
-import com.example.tempo.interfaces.OnItemClickItemCity
 import com.example.tempo.interfaces.OnItemClickRecycler
 import com.example.tempo.remote.ApiServiceSearch
 import com.example.tempo.remote.RetrofitClient
 import com.example.tempo.repository.RepositoryCities
-import com.example.tempo.repository.RepositoryHistory
 import com.google.android.gms.location.FusedLocationProviderClient
 import com.google.android.gms.location.LocationServices
 import org.koin.android.ext.android.inject
@@ -41,11 +40,10 @@ import retrofit2.Callback
 import retrofit2.Response
 import kotlin.properties.Delegates
 
-class SearchActivity : AppCompatActivity(), OnItemClickRecycler, OnItemClickItemCity,
+class SearchActivity : AppCompatActivity(), OnItemClickRecycler, OnClickItemHistoryCity,
     OnItemClickDeleteCity {
 
     private val repositoryCities: RepositoryCities by inject()
-    private val repositoryHistory: RepositoryHistory by inject()
     private val binding by lazy { ActivitySearchBinding.inflate(layoutInflater) }
     private lateinit var adapterCities: CitiesAdapter
     private lateinit var adapterHistory: AdapterHistory
@@ -138,12 +136,6 @@ class SearchActivity : AppCompatActivity(), OnItemClickRecycler, OnItemClickItem
         })
     }
 
-    override fun clickCity(id: String, city: String, state: String) {
-        viewModelSearch.saveHistory(CityData(0, id, city, state, "", ""))
-        repositoryCities.storeCity(id, city, state, "", "")
-        finish()
-    }
-
     private fun listener(){
         binding.bottomLocation.setOnClickListener { getPermission() }
         binding.backActivity.setOnClickListener { finish() }
@@ -225,7 +217,6 @@ class SearchActivity : AppCompatActivity(), OnItemClickRecycler, OnItemClickItem
     private fun getAddress(){
 
         geocoder = Geocoder(applicationContext)
-
         try {
             val addresses: List<Address> = geocoder.getFromLocation(latitude, longitude, 1)
             val address = addresses[0].getAddressLine(0)
@@ -235,23 +226,28 @@ class SearchActivity : AppCompatActivity(), OnItemClickRecycler, OnItemClickItem
             val city = cityDiv[0].trim()
             val state = cityDiv[1].trim()
 
-            saveCityAndFinishActivity("0", city, state)
+            saveCityAndFinishActivity(CityData(0,"0", city, state,
+                latitude.toString(), longitude.toString()))
 
         } catch (e: Exception) {
             toastMessage("Não conseguimos obter o endereço!")
         }
     }
 
-    private fun saveCityAndFinishActivity(id: String, city: String, state: String){
+    override fun clickCity(item: CityData) {
+        saveCityAndFinishActivity(item)
+    }
 
-        val latLong = searchLatAndLong(city)
-
-        repositoryCities.storeCity(id, city, state, latLong.latitude, latLong.longitude)
-        repositoryHistory.saveCity(CityData(0, id, city, state, latLong.latitude, latLong.longitude))
+    private fun saveCityAndFinishActivity(item: CityData){
+        val latLong = searchLatAndLong(item.city)
+        val itemCity = CityData(0, item.id.toString(), item.city, item.state, latLong.latitude, latLong.longitude)
+        repositoryCities.storeCity(itemCity)
+        viewModelSearch.saveHistory(itemCity)
         finish()
     }
 
-    private fun searchLatAndLong(city: String): Coordinates{
+    private fun searchLatAndLong(city: String): Coordinates {
+        geocoder = Geocoder(applicationContext)
         val addresses: List<Address> = geocoder.getFromLocationName(city, 1)
         val address = addresses[0]
         val latitude = address.latitude.toString()
@@ -262,7 +258,7 @@ class SearchActivity : AppCompatActivity(), OnItemClickRecycler, OnItemClickItem
 
     private fun activeGpsDialog() {
         val dialogClickListenerPositive =
-            DialogInterface.OnClickListener { dialog, which ->
+            DialogInterface.OnClickListener { _, which ->
                 when (which) {
                     DialogInterface.BUTTON_POSITIVE -> {
                         val callGPSSettingIntent = Intent(Settings.ACTION_LOCATION_SOURCE_SETTINGS)
@@ -271,7 +267,7 @@ class SearchActivity : AppCompatActivity(), OnItemClickRecycler, OnItemClickItem
                 }
             }
         val dialogClickListenerNegative =
-            DialogInterface.OnClickListener { dialog, which ->
+            DialogInterface.OnClickListener { _, which ->
                 when (which) {
                     DialogInterface.BUTTON_NEGATIVE -> {
                         toastMessage("GPS não foi ativado!")
@@ -286,8 +282,8 @@ class SearchActivity : AppCompatActivity(), OnItemClickRecycler, OnItemClickItem
             .show()
     }
 
-    override fun clickItemCity(item: CityData) {
-        saveCityAndFinishActivity(item.idcity, item.city, item.state)
+    override fun clickItemHistoryCity(item: CityData) {
+        saveCityAndFinishActivity(item)
     }
 
     override fun clickDeleteCity(item: CityData, position: Int) {

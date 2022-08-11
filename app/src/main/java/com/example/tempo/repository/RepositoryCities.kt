@@ -1,23 +1,18 @@
 package com.example.tempo.repository
 
 import com.example.tempo.constants.ConstantsCities
+import com.example.tempo.dataclass.CityData
 import com.example.tempo.security.SecurityPreferences
 
 class RepositoryCities(private val securityPreferences: SecurityPreferences) {
 
-    fun storeCity(id: String, city: String, state: String, latitude: String, longitude: String) {
+    fun storeCity(item: CityData) {
         securityPreferences.run {
-            storeString(ConstantsCities.CITY.ID, id)
-            storeString(ConstantsCities.CITY.NOME, city)
-            storeString(ConstantsCities.CITY.UF, state)
-            storeString(ConstantsCities.CITY.LAT, latitude)
-            storeString(ConstantsCities.CITY.LON, longitude)
-        }
-    }
-
-    fun storeValueKey(key: String) {
-        securityPreferences.run {
-            storeString("key", key)
+            storeString(ConstantsCities.CITY.ID, item.idCity)
+            storeString(ConstantsCities.CITY.NOME, item.city)
+            storeString(ConstantsCities.CITY.UF, item.state)
+            storeString(ConstantsCities.CITY.LAT, item.latitude)
+            storeString(ConstantsCities.CITY.LON, item.longitude)
         }
     }
 }

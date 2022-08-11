@@ -9,10 +9,10 @@ import androidx.constraintlayout.widget.ConstraintLayout
 import androidx.recyclerview.widget.RecyclerView
 import com.example.tempo.R
 import com.example.tempo.dataclass.CityData
+import com.example.tempo.interfaces.OnClickItemHistoryCity
 import com.example.tempo.interfaces.OnItemClickDeleteCity
-import com.example.tempo.interfaces.OnItemClickItemCity
 
-class AdapterHistory (private val clickItem: OnItemClickItemCity,
+class AdapterHistory (private val clickItem: OnClickItemHistoryCity,
                       private val clickDelete: OnItemClickDeleteCity):
     RecyclerView.Adapter<AdapterHistory.ViewHolderHistory>() {
 
@@ -50,7 +50,7 @@ class AdapterHistory (private val clickItem: OnItemClickItemCity,
         override fun onClick(view: View?) {
             val position = adapterPosition
             when (view){
-                itemCity -> clickItem.clickItemCity(listHistory[position])
+                itemCity -> clickItem.clickItemHistoryCity(listHistory[position])
                 delete -> clickDelete.clickDeleteCity(listHistory[position], position)
             }
         }
@@ -73,7 +73,7 @@ class AdapterHistory (private val clickItem: OnItemClickItemCity,
     }
 
     fun updateRemoveAll(list: ArrayList<CityData>) {
-        listHistory.removeAll(list)
+        listHistory.removeAll(list.toSet())
         if (list.size >= 2){
             notifyItemRangeRemoved(0, list.size)
         }
