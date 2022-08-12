@@ -55,6 +55,7 @@ class SearchActivity : AppCompatActivity(), OnItemClickRecycler, OnClickItemHist
     private var longitude: Double = 0.0
     private var gpsActive by Delegates.notNull<Boolean>()
     private lateinit var geocoder: Geocoder
+    private var existHistory by Delegates.notNull<Boolean>()
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -113,8 +114,13 @@ class SearchActivity : AppCompatActivity(), OnItemClickRecycler, OnClickItemHist
         viewModelSearch.getHistory()
         viewModelSearch.listHistory.observe(this){
             if (it.size != 0 && it != null){
+                existHistory = true
                 binding.textViewHistoryHere.visibility = View.INVISIBLE
                 adapterHistory.updateHistory(it)
+            }
+            else {
+                binding.textViewHistoryHere.visibility = View.VISIBLE
+                existHistory = false
             }
         }
     }
@@ -123,11 +129,21 @@ class SearchActivity : AppCompatActivity(), OnItemClickRecycler, OnClickItemHist
 
         binding.editTextSearch.addTextChangedListener(object : TextWatcher {
             override fun onTextChanged(s: CharSequence, start: Int, before: Int, count: Int) {
-                adapterCities.filter.filter(s.toString())
-                binding.recyclerCidades.visibility = View.VISIBLE
-                binding.bottomLocation.visibility = View.INVISIBLE
-                binding.recyclerHistory.visibility = View.INVISIBLE
-                binding.textViewHistoryHere.visibility = View.INVISIBLE
+                if (count != 0){
+                    adapterCities.filter.filter(s.toString())
+                    binding.recyclerCidades.visibility = View.VISIBLE
+                    binding.bottomLocation.visibility = View.INVISIBLE
+                    binding.recyclerHistory.visibility = View.INVISIBLE
+                    binding.textViewHistoryHere.visibility = View.INVISIBLE
+                }
+                else {
+                    binding.recyclerCidades.visibility = View.INVISIBLE
+                    binding.bottomLocation.visibility = View.VISIBLE
+                    binding.recyclerHistory.visibility = View.VISIBLE
+                    if (!existHistory){
+                        binding.textViewHistoryHere.visibility = View.VISIBLE
+                    }
+                }
             }
             override fun beforeTextChanged(s: CharSequence, start: Int, count: Int, after: Int) {}
             override fun afterTextChanged(s: Editable) {}
@@ -277,6 +293,7 @@ class SearchActivity : AppCompatActivity(), OnItemClickRecycler, OnClickItemHist
     override fun clickDeleteCity(item: CityData, position: Int) {
         viewModelSearch.deleteHistory(item.id)
         adapterHistory.updateRemoveItem(position)
+        observerHistory()
     }
 
     private fun toastMessage(message: String){
