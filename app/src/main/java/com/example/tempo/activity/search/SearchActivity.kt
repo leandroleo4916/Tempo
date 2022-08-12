@@ -102,9 +102,7 @@ class SearchActivity : AppCompatActivity(), OnItemClickRecycler, OnClickItemHist
                 call: Call<ArrayList<Cidades>>,
                 res: Response<ArrayList<Cidades>>)
             {
-                res.body()?.let {
-                    adapterCities.updateCidades(it)
-                }
+                res.body()?.let { adapterCities.updateCities(it) }
             }
             override fun onFailure(call: Call<ArrayList<Cidades>>, t: Throwable) {}
         })
@@ -151,12 +149,8 @@ class SearchActivity : AppCompatActivity(), OnItemClickRecycler, OnClickItemHist
                 this,
                 Manifest.permission.ACCESS_COARSE_LOCATION
             ) == PackageManager.PERMISSION_GRANTED
-        ) {
-            checkGpsActive()
-        }
-        else {
-            permissionGps()
-        }
+        ) checkGpsActive()
+        else permissionGps()
     }
 
     @SuppressLint("MissingPermission")
@@ -194,22 +188,16 @@ class SearchActivity : AppCompatActivity(), OnItemClickRecycler, OnClickItemHist
         )
     }
 
-    override fun onRequestPermissionsResult(
-        requestCode: Int,
-        permissions: Array<out String>,
-        grantResults: IntArray
-    ) {
+    override fun onRequestPermissionsResult (requestCode: Int,
+                                             permissions: Array<out String>,
+                                             grantResults: IntArray) {
         super.onRequestPermissionsResult(requestCode, permissions, grantResults)
 
         when (requestCode) {
             permissionCode -> {
                 if (grantResults.isNotEmpty() && grantResults[0]
-                    == PackageManager.PERMISSION_GRANTED
-                ) {
-                    checkGpsActive()
-                } else {
-                    toastMessage("Permissão negada!")
-                }
+                    == PackageManager.PERMISSION_GRANTED) checkGpsActive()
+                else toastMessage("Permissão negada!")
             }
         }
     }

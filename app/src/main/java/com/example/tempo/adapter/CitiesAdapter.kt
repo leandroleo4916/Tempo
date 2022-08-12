@@ -48,7 +48,8 @@ class CitiesAdapter(private val listener: OnItemClickRecycler):
             val city = listCities[position].nome
             val state = listCities[position].microrregiao.mesorregiao.uf.sigla
 
-            when(view){ itemView -> listener.clickCity(CityData(0, id, city, state, "", "")) }
+            when(view){ itemView ->
+                listener.clickCity(CityData(0, id, city, state, "", "")) }
         }
 
         fun bind(city: String, state: String){
@@ -59,7 +60,7 @@ class CitiesAdapter(private val listener: OnItemClickRecycler):
         }
     }
 
-    fun updateCidades(list: ArrayList<Cidades>){
+    fun updateCities(list: ArrayList<Cidades>){
         data = list
         getFilter()
         notifyDataSetChanged()

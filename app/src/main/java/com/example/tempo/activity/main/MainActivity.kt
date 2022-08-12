@@ -23,7 +23,6 @@ class MainActivity : AppCompatActivity() {
 
     private val binding by lazy { ActivityMainBinding.inflate(layoutInflater) }
     private val securityPreferences: SecurityPreferences by inject()
-    private val repositoryCities: RepositoryCities by inject()
     private val weatherViewModel: WeatherViewModel by viewModel()
     private val captureDateCurrent = CaptureDateCurrent()
     private val converterPhoto = ConverterPhoto()
