@@ -1,5 +1,4 @@
 package com.example.tempo.activity.main
-
 import WeatherDataClass
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.ViewModel

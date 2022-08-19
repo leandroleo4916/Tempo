@@ -1,9 +1,10 @@
 package com.example.tempo.di
 
+import com.example.tempo.activity.ShowToast
 import com.example.tempo.activity.main.WeatherViewModel
 import com.example.tempo.activity.search.SearchViewModel
 import com.example.tempo.dbhistory.DataBaseHistory
-import com.example.tempo.remote.ApiServiceTime
+import com.example.tempo.remote.ApiServiceTimeDay
 import com.example.tempo.repository.RepositoryCities
 import com.example.tempo.repository.RepositoryHistory
 import com.example.tempo.repository.WeatherRepository
@@ -32,7 +33,7 @@ val retrofitModule = module {
             .addInterceptor(logging)
             .build()
     }
-    single<ApiServiceTime> { get<Retrofit>().create(ApiServiceTime::class.java) }
+    single<ApiServiceTimeDay> { get<Retrofit>().create(ApiServiceTimeDay::class.java) }
 }
 val weatherRepository = module { single { WeatherRepository(get()) } }
 val cityRepository = module { single { RepositoryCities(get()) } }
@@ -41,8 +42,9 @@ val securityPreferences = module { single { SecurityPreferences(get()) } }
 val weatherViewModel = module { viewModel { WeatherViewModel(get()) } }
 val historyViewModel = module { viewModel { SearchViewModel(get()) } }
 val dataBase = module { single { DataBaseHistory(get()) } }
+val showToast = module { factory { ShowToast() } }
 
 val appModules = listOf(
-    retrofitModule, securityPreferences, weatherRepository,
+    retrofitModule, securityPreferences, weatherRepository, showToast,
     weatherViewModel, cityRepository, dataBase, repositoryHistory, historyViewModel
 )

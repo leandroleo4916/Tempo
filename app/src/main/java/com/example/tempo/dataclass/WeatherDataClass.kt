@@ -24,7 +24,12 @@ data class WeatherDataClass (
     @SerializedName("hourly_units")
     val hourlyUnits: HourlyUnits,
 
-    val hourly: Hourly
+    val hourly: Hourly,
+
+    @SerializedName("daily_units")
+    val dailyUnits: DailyUnits,
+
+    val daily: Daily
 )
 
 data class CurrentWeather (
@@ -35,16 +40,43 @@ data class CurrentWeather (
     val time: String
 )
 
+data class Daily (
+    val time: List<String>,
+
+    @SerializedName("temperature_2m_max")
+    val temperature2MMax: List<Double>,
+
+    @SerializedName("temperature_2m_min")
+    val temperature2MMin: List<Double>
+)
+
+data class DailyUnits (
+    val time: String,
+
+    @SerializedName("temperature_2m_max")
+    val temperature2MMax: String,
+
+    @SerializedName("temperature_2m_min")
+    val temperature2MMin: String
+)
+
 data class Hourly (
     val time: List<String>,
 
     @SerializedName("temperature_2m")
-    val temperature2M: List<Double>
+    val temperature2M: List<Double>,
+
+    @SerializedName("relativehumidity_2m")
+    val relativehumidity2M: List<Long>
 )
+
 
 data class HourlyUnits (
     val time: String,
 
     @SerializedName("temperature_2m")
-    val temperature2M: String
+    val temperature2M: String,
+
+    @SerializedName("relativehumidity_2m")
+    val relativehumidity2M: String
 )
