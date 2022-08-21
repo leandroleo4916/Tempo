@@ -16,25 +16,26 @@ import org.koin.dsl.module
 import retrofit2.Retrofit
 import retrofit2.converter.gson.GsonConverterFactory
 
-private const val URL_BASE = "https://viacep.com.br/ws/"
-
 val retrofitModule = module {
     single<Retrofit> {
         Retrofit.Builder()
-            .baseUrl(URL_BASE)
+            .baseUrl("https://api.open-meteo.com/")
             .client(get())
             .addConverterFactory(GsonConverterFactory.create())
             .build()
     }
-    single{
+    single {
         val logging = HttpLoggingInterceptor()
         logging.level = HttpLoggingInterceptor.Level.BODY
         OkHttpClient.Builder()
             .addInterceptor(logging)
             .build()
     }
-    single<ApiServiceTimeDay> { get<Retrofit>().create(ApiServiceTimeDay::class.java) }
+    single<ApiServiceTimeDay> {
+        get<Retrofit>().create(ApiServiceTimeDay::class.java)
+    }
 }
+
 val weatherRepository = module { single { WeatherRepository(get()) } }
 val cityRepository = module { single { RepositoryCities(get()) } }
 val repositoryHistory = module { single { RepositoryHistory(get()) } }

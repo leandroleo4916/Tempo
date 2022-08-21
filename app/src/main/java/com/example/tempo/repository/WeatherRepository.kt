@@ -10,11 +10,11 @@ sealed class ResultRequest<out R> {
     data class ErrorConnection(val exception: Exception) : ResultRequest<Nothing>()
 }
 
-class WeatherRepository(private val service: ApiServiceTimeDay) {
+class WeatherRepository(private val serviceApi: ApiServiceTimeDay) {
 
     fun weatherData(latitude: String, longitude: String) = liveData {
         try {
-            val request = service.getWeatherDay(latitude, longitude)
+            val request = serviceApi.getWeatherDay(latitude, longitude)
             if(request.isSuccessful){
                 emit(ResultRequest.Success(dado = request.body()))
             } else {

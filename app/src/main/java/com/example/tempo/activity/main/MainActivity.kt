@@ -12,6 +12,7 @@ import com.example.tempo.adapter.MainAdapter
 import com.example.tempo.constants.ConstantsCities
 import com.example.tempo.databinding.ActivityMainBinding
 import com.example.tempo.repository.ResultRequest
+import com.example.tempo.repository.WeatherType
 import com.example.tempo.security.SecurityPreferences
 import com.example.tempo.utils.CaptureDateCurrent
 import com.example.tempo.utils.ConverterPhoto
@@ -93,13 +94,14 @@ class MainActivity : AppCompatActivity() {
             var time = res.currentWeather.temperature
             var max = res.daily.temperature2MMax[0]
             var min = res.daily.temperature2MMin[0]
+            val code = WeatherType.weatherCode(res.currentWeather.weathercode.toInt())
             if (fell > fell.toInt()+0.5) fell += 1
             if (time > time.toInt()+0.5) time += 1
             if (max > max.toInt()+0.5) max += 1
             if (min > min.toInt()+0.5) min += 1
 
             textviewCidade.text = "$city"+" - "+"$uf"
-            //textviewCeu.text = res.weather[0].description
+            textviewCeu.text = code.weatherDesc
             textviewDate.text = "$dateDay - $hora"
             textviewHumidity.text = "Humidade ${res.hourly.relativehumidity2M[0]}%"
             textviewTermica.text = "Sessação térmica de ${fell.toInt()}"+"º"
