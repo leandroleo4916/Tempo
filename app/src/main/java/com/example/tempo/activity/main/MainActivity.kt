@@ -33,6 +33,9 @@ class MainActivity : AppCompatActivity() {
     private lateinit var uf: String
     private lateinit var latitude: String
     private lateinit var longitude: String
+    private val data = ArrayList<TimeDataClass>()
+    private val dateDay = captureDateCurrent.captureDateDay()
+    private val hour = captureDateCurrent.captureHoraCurrent()
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -86,9 +89,6 @@ class MainActivity : AppCompatActivity() {
 
     private fun addElementViewTime(res: WeatherDataClass) {
 
-        val dateDay = captureDateCurrent.captureDateDay()
-        val hora = captureDateCurrent.captureHoraCurrent()
-
         binding.run {
             progressMain.visibility = View.GONE
             val fell = res.hourly.apparentTemperature[0]
@@ -108,7 +108,7 @@ class MainActivity : AppCompatActivity() {
 
             "$city - $uf".also { textviewCidade.text = it }
             code.weatherDesc.also { textviewCeu.text = it }
-            "$dateDay - $hora".also { textviewDate.text = it }
+            "$dateDay - $hour".also { textviewDate.text = it }
             "Humidade ${res.hourly.relativehumidity2M[0]}%".also { textviewHumidity.text = it }
             ("Sessação térmica de ${fellUnit}º").also { textviewTermica.text = it }
             "$timeUnit".also { textViewTemperatura.text = it }
@@ -141,16 +141,36 @@ class MainActivity : AppCompatActivity() {
     }
 
     private fun getData(weather: WeatherDataClass){
-        val data = ArrayList<TimeDataClass>()
-        for (i in 0..23){
-            val time = weather.hourly.time[i].split("T")
-            val temp = weather.hourly.temperature2M[i]
+        val hourInt = divHour(hour)
+        var init = 0
+        var position = 0
+
+        while (init <= 23){
+            val temp = weather.hourly.temperature2M[position]
             var temperature = temp.toInt()
             if (temp > temperature+0.5) temperature += 1
+            val time = weather.hourly.time[position].split("T")
+            val timeInt = divHour(time[1])
+            position += 1
 
-            data.add(TimeDataClass(time[1], temperature.toString(),
-                weather.hourly.relativehumidity2M[i].toString()))
+            if (timeInt >= hourInt){
+                init += 1
+                data.add(TimeDataClass(time[1], temperature.toString(),
+                    weather.hourly.relativehumidity2M[position].toString()))
+            }
+            else {
+                if (data.size != 0){
+                    init += 1
+                    data.add(TimeDataClass(time[1], temperature.toString(),
+                        weather.hourly.relativehumidity2M[position].toString()))
+                }
+            }
         }
         adapter.updateWeatherPerHour(data)
+    }
+
+    private fun divHour(hour: String): Int{
+        val res = hour.split(":")
+        return res[0].toInt()
     }
 }
