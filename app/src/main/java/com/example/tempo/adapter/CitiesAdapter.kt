@@ -54,7 +54,7 @@ class CitiesAdapter(private val listener: OnItemClickRecycler):
 
         fun bind(city: String, state: String){
             itemView.run {
-                findViewById<TextView>(R.id.text_cidade).text = city
+                findViewById<TextView>(R.id.text_time).text = city
                 findViewById<TextView>(R.id.text_estado).text = state
             }
         }

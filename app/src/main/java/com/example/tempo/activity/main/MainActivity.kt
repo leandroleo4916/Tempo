@@ -15,7 +15,6 @@ import com.example.tempo.repository.ResultRequest
 import com.example.tempo.repository.WeatherType
 import com.example.tempo.security.SecurityPreferences
 import com.example.tempo.utils.CaptureDateCurrent
-import com.example.tempo.utils.ConverterPhoto
 import org.koin.android.ext.android.inject
 import org.koin.androidx.viewmodel.ext.android.viewModel
 
@@ -26,7 +25,6 @@ class MainActivity : AppCompatActivity() {
     private val weatherViewModel: WeatherViewModel by viewModel()
     private val showToast: ShowToast by inject()
     private val captureDateCurrent = CaptureDateCurrent()
-    private val converterPhoto = ConverterPhoto()
     private lateinit var adapter: MainAdapter
     private lateinit var id: String
     private lateinit var city: String
@@ -68,9 +66,7 @@ class MainActivity : AppCompatActivity() {
             it?.let { result ->
                 when (result) {
                     is ResultRequest.Success -> {
-                        result.dado?.let { res ->
-                            addElementViewTime(res)
-                        }
+                        result.dado?.let { res -> addElementViewTime(res) }
                     }
                     is ResultRequest.Error -> {
                         result.exception.message?.let { it1 -> showToast.toastMessage(it1, this) }
@@ -90,23 +86,28 @@ class MainActivity : AppCompatActivity() {
 
         binding.run {
             progressMain.visibility = View.GONE
-            var fell = res.latitude
-            var time = res.currentWeather.temperature
-            var max = res.daily.temperature2MMax[0]
-            var min = res.daily.temperature2MMin[0]
+            val fell = res.hourly.apparentTemperature[0]
+            var fellUnit = fell.toInt()
+            val time = res.currentWeather.temperature
+            var timeUnit = time.toInt()
+            val max = res.daily.temperature2MMax[0]
+            var maxUnit = max.toInt()
+            val min = res.daily.temperature2MMin[0]
+            var minUnit = min.toInt()
             val code = WeatherType.weatherCode(res.currentWeather.weathercode.toInt())
-            if (fell > fell.toInt()+0.5) fell += 1
-            if (time > time.toInt()+0.5) time += 1
-            if (max > max.toInt()+0.5) max += 1
-            if (min > min.toInt()+0.5) min += 1
 
-            textviewCidade.text = "$city"+" - "+"$uf"
-            textviewCeu.text = code.weatherDesc
-            textviewDate.text = "$dateDay - $hora"
-            textviewHumidity.text = "Humidade ${res.hourly.relativehumidity2M[0]}%"
-            textviewTermica.text = "Sessação térmica de ${fell.toInt()}"+"º"
-            textViewTemperatura.text = "${time.toInt()}"
-            textviewMaxmin.text = "${max.toInt()}"+"º/"+"${min.toInt()}"+"º"
+            if (fell > fellUnit+0.5) fellUnit += 1
+            if (time > timeUnit+0.5) timeUnit += 1
+            if (max > maxUnit+0.5) maxUnit += 1
+            if (min > minUnit+0.5) minUnit += 1
+
+            "$city - $uf".also { textviewCidade.text = it }
+            code.weatherDesc.also { textviewCeu.text = it }
+            "$dateDay - $hora".also { textviewDate.text = it }
+            "Humidade ${res.hourly.relativehumidity2M[0]}%".also { textviewHumidity.text = it }
+            ("Sessação térmica de ${fellUnit}º").also { textviewTermica.text = it }
+            "$timeUnit".also { textViewTemperatura.text = it }
+            ("$maxUnit"+"º/"+"${minUnit}º").also { textviewMaxmin.text = it }
 
             progressMain.visibility = View.GONE
             textviewCidade.visibility = View.VISIBLE

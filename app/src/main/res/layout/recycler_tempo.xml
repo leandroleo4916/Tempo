@@ -9,75 +9,76 @@
     android:layout_height="110dp">
 
     <TextView
-        android:id="@+id/textView_cidade"
+        android:id="@+id/text_time"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_marginTop="5dp"
         android:gravity="center"
         android:singleLine="true"
         android:text="17:02"
-        android:textColor="@color/black"
+        android:textColor="@color/white"
         android:textSize="14sp"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent"
-        tools:ignore="MissingConstraints" />
+        tools:ignore="HardcodedText,MissingConstraints" />
 
     <TextView
-        android:id="@+id/textView_estado"
+        android:id="@+id/text_temperature"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:gravity="center"
         android:singleLine="true"
         android:text="26"
-        android:textColor="@color/black"
+        android:textColor="@color/white"
         android:textSize="22sp"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/textView_cidade"
-        tools:ignore="MissingConstraints" />
+        app:layout_constraintTop_toBottomOf="@+id/text_time"
+        tools:ignore="HardcodedText,MissingConstraints" />
 
     <TextView
-        android:id="@+id/text_data"
+        android:id="@+id/text_celcius"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:singleLine="true"
         android:text="o"
-        android:textColor="@color/black"
+        android:textColor="@color/white"
         android:textSize="12sp"
-        app:layout_constraintStart_toEndOf="@+id/textView_estado"
-        app:layout_constraintTop_toTopOf="@+id/textView_estado" />
+        app:layout_constraintStart_toEndOf="@+id/text_temperature"
+        app:layout_constraintTop_toTopOf="@+id/text_temperature"
+        tools:ignore="HardcodedText" />
 
     <ImageView
-        android:id="@+id/imageView"
+        android:id="@+id/image_icon_time"
         android:layout_width="30dp"
         android:layout_height="30dp"
         android:src="@drawable/background"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/textView_estado"
+        app:layout_constraintTop_toBottomOf="@+id/text_temperature"
         tools:ignore="ContentDescription" />
 
     <TextView
-        android:id="@+id/textView_chuva"
+        android:id="@+id/text_rain"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_marginTop="2dp"
         android:gravity="center"
         android:singleLine="true"
         android:text="35%"
-        android:textColor="@color/black"
+        android:textColor="@color/white"
         android:textSize="12sp"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/imageView"
-        tools:ignore="MissingConstraints" />
+        app:layout_constraintTop_toBottomOf="@+id/image_icon_time"
+        tools:ignore="HardcodedText,MissingConstraints" />
 
     <Toolbar
         android:id="@+id/toolbar_line_recycler_detail"
         android:layout_width="1dp"
         android:layout_height="match_parent"
-        android:background="@color/black"
+        android:background="@color/white"
         android:layout_marginTop="10dp"
         android:layout_marginBottom="10dp"
         app:layout_constraintBottom_toBottomOf="parent"

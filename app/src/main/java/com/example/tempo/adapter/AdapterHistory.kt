@@ -44,7 +44,7 @@ class AdapterHistory (private val clickItem: OnClickItemHistoryCity,
         }
 
         fun bindHistory(history: CityData){
-            city.text = history.city+" - "+history.state
+            (history.city+" - "+history.state).also { city.text = it }
         }
 
         override fun onClick(view: View?) {

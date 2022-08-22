@@ -47,7 +47,7 @@ class MainAdapter: RecyclerView.Adapter<MainAdapter.MainViewHolder>() {
 
         fun bind(cidade: String, estado: String){
             itemView.run {
-                findViewById<TextView>(R.id.text_cidade).text = cidade
+                findViewById<TextView>(R.id.text_time).text = cidade
                 findViewById<TextView>(R.id.text_estado).text = estado
             }
         }
