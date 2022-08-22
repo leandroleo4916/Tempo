@@ -6,11 +6,13 @@ import android.os.Bundle
 import android.view.View
 import androidx.appcompat.app.AppCompatActivity
 import androidx.recyclerview.widget.LinearLayoutManager
+import androidx.recyclerview.widget.RecyclerView
 import com.example.tempo.activity.ShowToast
 import com.example.tempo.activity.search.SearchActivity
 import com.example.tempo.adapter.MainAdapter
 import com.example.tempo.constants.ConstantsCities
 import com.example.tempo.databinding.ActivityMainBinding
+import com.example.tempo.dataclass.TimeDataClass
 import com.example.tempo.repository.ResultRequest
 import com.example.tempo.repository.WeatherType
 import com.example.tempo.security.SecurityPreferences
@@ -57,7 +59,7 @@ class MainActivity : AppCompatActivity() {
     private fun recycler() {
         val recycler = binding.recyclerViewMain
         adapter = MainAdapter()
-        recycler.layoutManager = LinearLayoutManager(this)
+        recycler.layoutManager = LinearLayoutManager(this, RecyclerView.HORIZONTAL, false)
         recycler.adapter = adapter
     }
 
@@ -66,7 +68,10 @@ class MainActivity : AppCompatActivity() {
             it?.let { result ->
                 when (result) {
                     is ResultRequest.Success -> {
-                        result.dado?.let { res -> addElementViewTime(res) }
+                        result.dado?.let { res ->
+                            addElementViewTime(res)
+                            getData(res)
+                        }
                     }
                     is ResultRequest.Error -> {
                         result.exception.message?.let { it1 -> showToast.toastMessage(it1, this) }
@@ -133,5 +138,19 @@ class MainActivity : AppCompatActivity() {
         super.onRestart()
         searchCity()
         observer()
+    }
+
+    private fun getData(weather: WeatherDataClass){
+        val data = ArrayList<TimeDataClass>()
+        for (i in 0..23){
+            val time = weather.hourly.time[i].split("T")
+            val temp = weather.hourly.temperature2M[i]
+            var temperature = temp.toInt()
+            if (temp > temperature+0.5) temperature += 1
+
+            data.add(TimeDataClass(time[1], temperature.toString(),
+                weather.hourly.relativehumidity2M[i].toString()))
+        }
+        adapter.updateWeatherPerHour(data)
     }
 }

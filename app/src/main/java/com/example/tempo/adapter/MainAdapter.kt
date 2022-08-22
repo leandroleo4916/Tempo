@@ -6,12 +6,11 @@ import android.view.ViewGroup
 import android.widget.TextView
 import androidx.recyclerview.widget.RecyclerView
 import com.example.tempo.R
-import com.example.tempo.dataclass.InfoCidade
+import com.example.tempo.dataclass.TimeDataClass
 
 class MainAdapter: RecyclerView.Adapter<MainAdapter.MainViewHolder>() {
 
-    private var data = arrayListOf<InfoCidade?>()
-    private var listCities = arrayListOf<InfoCidade>()
+    private var data = ArrayList<TimeDataClass>()
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): MainViewHolder {
         val item = LayoutInflater
@@ -22,15 +21,11 @@ class MainAdapter: RecyclerView.Adapter<MainAdapter.MainViewHolder>() {
     }
 
     override fun onBindViewHolder(holder: MainViewHolder, position: Int) {
-
-        val city = listCities[position]
-        holder.run { city }
-
+        val time = data[position]
+        holder.bind(time)
     }
 
-    override fun getItemCount(): Int {
-        return listCities.size
-    }
+    override fun getItemCount() = data.size
 
     inner class MainViewHolder (itemView: View): RecyclerView.ViewHolder(itemView),
         View.OnClickListener {
@@ -39,22 +34,20 @@ class MainAdapter: RecyclerView.Adapter<MainAdapter.MainViewHolder>() {
 
         override fun onClick(view: View?) {
             val position = adapterPosition
-            val id = listCities[position]
-            val cidade = listCities[position]
-
             when(view){ } //itemView -> listener.clickRecycler(id, cidade) }
         }
 
-        fun bind(cidade: String, estado: String){
+        fun bind(weather: TimeDataClass){
             itemView.run {
-                findViewById<TextView>(R.id.text_time).text = cidade
-                findViewById<TextView>(R.id.text_estado).text = estado
+                findViewById<TextView>(R.id.text_time).text = weather.time
+                findViewById<TextView>(R.id.text_temperature).text = weather.temperature
+                findViewById<TextView>(R.id.text_rain).text = weather.rain
             }
         }
     }
 
-    fun updateMain(list: ArrayList<InfoCidade?>){
-        data = list
+    fun updateWeatherPerHour(weather: ArrayList<TimeDataClass>) {
+        data = weather
         notifyDataSetChanged()
     }
 }
