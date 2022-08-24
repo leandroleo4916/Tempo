@@ -6,6 +6,7 @@ import android.view.View
 import android.view.ViewGroup
 import android.widget.ImageView
 import android.widget.TextView
+import android.widget.Toolbar
 import androidx.recyclerview.widget.RecyclerView
 import com.example.tempo.R
 import com.example.tempo.dataclass.TimeDataClass
@@ -24,7 +25,7 @@ class MainAdapter: RecyclerView.Adapter<MainAdapter.MainViewHolder>() {
 
     override fun onBindViewHolder(holder: MainViewHolder, position: Int) {
         val time = data[position]
-        holder.bind(time)
+        holder.bind(time, position)
     }
 
     override fun getItemCount() = data.size
@@ -40,13 +41,16 @@ class MainAdapter: RecyclerView.Adapter<MainAdapter.MainViewHolder>() {
         }
 
         @SuppressLint("UseCompatLoadingForDrawables")
-        fun bind(weather: TimeDataClass){
+        fun bind(weather: TimeDataClass, position: Int){
             itemView.run {
                 findViewById<TextView>(R.id.text_time).text = weather.time
                 val image = findViewById<ImageView>(R.id.image_icon_time)
                 image.setImageResource(weather.icon)
                 findViewById<TextView>(R.id.text_temperature).text = weather.temperature
                 findViewById<TextView>(R.id.text_humidity).text = weather.humidity+"%"
+                if (position == 23) {
+                    findViewById<Toolbar>(R.id.toolbar_div).visibility = View.GONE
+                }
             }
         }
     }

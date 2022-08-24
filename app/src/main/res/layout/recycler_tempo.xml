@@ -87,7 +87,7 @@
         tools:ignore="HardcodedText,MissingConstraints" />
 
     <Toolbar
-        android:id="@+id/toolbar_line_recycler_detail"
+        android:id="@+id/toolbar_div"
         android:layout_width="1dp"
         android:layout_height="match_parent"
         android:background="@color/gray"
