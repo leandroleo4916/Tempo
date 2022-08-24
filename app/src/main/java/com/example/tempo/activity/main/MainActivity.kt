@@ -71,9 +71,10 @@ class MainActivity : AppCompatActivity() {
             it?.let { result ->
                 when (result) {
                     is ResultRequest.Success -> {
-                        result.dado?.let { res ->
-                            addElementViewMain(res)
-                            setElementRecycler(res)
+                        result.dado?.let { weather ->
+                            addElementViewMain(weather)
+                            addElementRecycler(weather)
+                            addElementTimeSevenDays(weather)
                         }
                     }
                     is ResultRequest.Error -> {
@@ -91,7 +92,8 @@ class MainActivity : AppCompatActivity() {
 
         binding.run {
             progressMain.visibility = View.GONE
-            val fell = weather.hourly.apparentTemperature[0]
+            val position = divHour(hour)
+            val fell = weather.hourly.apparentTemperature[position]
             var fellUnit = fell.toInt()
             val time = weather.currentWeather.temperature
             var timeUnit = time.toInt()
@@ -109,7 +111,7 @@ class MainActivity : AppCompatActivity() {
             "$city - $uf".also { textviewCidade.text = it }
             code.weatherDesc.also { textviewCeu.text = it }
             "$dateDay - $hour".also { textviewDate.text = it }
-            "Humidade ${weather.hourly.relativehumidity2M[0]}%".also { textviewHumidity.text = it }
+            "Humidade ${weather.hourly.relativehumidity2M[position]}%".also { textviewHumidity.text = it }
             ("Sessação térmica de ${fellUnit}º").also { textviewTermica.text = it }
             "$timeUnit".also { textViewTemperatura.text = it }
             ("$maxUnit"+"º/"+"${minUnit}º").also { textviewMaxmin.text = it }
@@ -123,6 +125,26 @@ class MainActivity : AppCompatActivity() {
             textviewMaxmin.visibility = View.VISIBLE
             textviewTermica.visibility = View.VISIBLE
             textviewHumidity.visibility = View.VISIBLE
+        }
+    }
+
+    private fun addElementTimeSevenDays(weather: WeatherDataClass) {
+
+        binding.run {
+            (weather.daily.temperature2MMax[0].toInt().toString()+"º/"+
+                    weather.daily.temperature2MMin[0].toInt().toString()+"º").also { textToday.text = it }
+            (weather.daily.temperature2MMax[1].toInt().toString()+"º/"+
+                    weather.daily.temperature2MMin[1].toInt().toString()+"º").also { textTomorrow.text = it }
+            (weather.daily.temperature2MMax[2].toInt().toString()+"º/"+
+                    weather.daily.temperature2MMin[2].toInt().toString()+"º").also { textDay3.text = it }
+            (weather.daily.temperature2MMax[3].toInt().toString()+"º/"+
+                    weather.daily.temperature2MMin[3].toInt().toString()+"º").also { textDay4.text = it }
+            (weather.daily.temperature2MMax[4].toInt().toString()+"º/"+
+                    weather.daily.temperature2MMin[4].toInt().toString()+"º").also { textDay5.text = it }
+            (weather.daily.temperature2MMax[5].toInt().toString()+"º/"+
+                    weather.daily.temperature2MMin[5].toInt().toString()+"º").also { textDay6.text = it }
+            (weather.daily.temperature2MMax[6].toInt().toString()+"º/"+
+                    weather.daily.temperature2MMin[6].toInt().toString()+"º").also { textDay7.text = it }
         }
     }
 
@@ -141,7 +163,7 @@ class MainActivity : AppCompatActivity() {
         observer()
     }
 
-    private fun setElementRecycler(weather: WeatherDataClass){
+    private fun addElementRecycler(weather: WeatherDataClass){
         val divHourInit = divHour(hour)
         var position = divHourInit
 
