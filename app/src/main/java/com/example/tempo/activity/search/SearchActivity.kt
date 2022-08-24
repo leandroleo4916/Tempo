@@ -75,7 +75,9 @@ class SearchActivity : AppCompatActivity(), OnItemClickRecycler, OnClickItemHist
 
     override fun onRestart() {
         super.onRestart()
-        gpsActive = locationManager.isProviderEnabled(LocationManager.GPS_PROVIDER)
+        val locationManager: LocationManager =
+            this.getSystemService(Context.LOCATION_SERVICE) as LocationManager
+        val gpsActive = locationManager.isProviderEnabled(LocationManager.GPS_PROVIDER)
         if (gpsActive) getPosition()
         else toastMessage("Gps não ativado!")
     }

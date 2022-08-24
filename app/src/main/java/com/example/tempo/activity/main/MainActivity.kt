@@ -136,35 +136,24 @@ class MainActivity : AppCompatActivity() {
 
     override fun onRestart() {
         super.onRestart()
+        data.clear()
         searchCity()
         observer()
     }
 
     private fun getData(weather: WeatherDataClass){
-        val hourInt = divHour(hour)
-        var init = 0
-        var position = 0
+        val divHourInit = divHour(hour)
+        var position = divHourInit
 
-        while (init <= 23){
+        for (i in 1..24){
             val temp = weather.hourly.temperature2M[position]
             var temperature = temp.toInt()
             if (temp > temperature+0.5) temperature += 1
             val time = weather.hourly.time[position].split("T")
-            val timeInt = divHour(time[1])
+            val rain = weather.hourly.relativehumidity2M[position].toString()
+            val code = WeatherType.weatherCode(weather.currentWeather.weathercode.toInt())
             position += 1
-
-            if (timeInt >= hourInt){
-                init += 1
-                data.add(TimeDataClass(time[1], temperature.toString(),
-                    weather.hourly.relativehumidity2M[position].toString()))
-            }
-            else {
-                if (data.size != 0){
-                    init += 1
-                    data.add(TimeDataClass(time[1], temperature.toString(),
-                        weather.hourly.relativehumidity2M[position].toString()))
-                }
-            }
+            data.add(TimeDataClass(time[1], temperature.toString(), code.iconRes, rain))
         }
         adapter.updateWeatherPerHour(data)
     }

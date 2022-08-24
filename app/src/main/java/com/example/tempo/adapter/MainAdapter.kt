@@ -1,8 +1,10 @@
 package com.example.tempo.adapter
 
+import android.annotation.SuppressLint
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import android.widget.ImageView
 import android.widget.TextView
 import androidx.recyclerview.widget.RecyclerView
 import com.example.tempo.R
@@ -37,15 +39,19 @@ class MainAdapter: RecyclerView.Adapter<MainAdapter.MainViewHolder>() {
             when(view){ } //itemView -> listener.clickRecycler(id, cidade) }
         }
 
+        @SuppressLint("UseCompatLoadingForDrawables")
         fun bind(weather: TimeDataClass){
             itemView.run {
                 findViewById<TextView>(R.id.text_time).text = weather.time
+                val image = findViewById<ImageView>(R.id.image_icon_time)
+                image.setImageResource(weather.icon)
                 findViewById<TextView>(R.id.text_temperature).text = weather.temperature
-                findViewById<TextView>(R.id.text_rain).text = weather.rain
+                findViewById<TextView>(R.id.text_humidity).text = weather.humidity+"%"
             }
         }
     }
 
+    @SuppressLint("NotifyDataSetChanged")
     fun updateWeatherPerHour(weather: ArrayList<TimeDataClass>) {
         data = weather
         notifyDataSetChanged()

@@ -34,6 +34,7 @@ data class WeatherDataClass (
 
 data class CurrentWeather (
     val temperature: Double,
+    val windspeed: Double,
     val winddirection: Long,
     val weathercode: Long,
     val time: String
@@ -50,7 +51,13 @@ data class Daily (
     val temperature2MMin: List<Double>,
 
     val sunrise: List<String>,
-    val sunset: List<String>
+    val sunset: List<String>,
+
+    @SerializedName("rain_sum")
+    val rainSum: List<Double>,
+
+    @SerializedName("windspeed_10m_max")
+    val windspeed10MMax: List<Double>
 )
 
 data class DailyUnits (
@@ -64,7 +71,13 @@ data class DailyUnits (
     val temperature2MMin: String,
 
     val sunrise: String,
-    val sunset: String
+    val sunset: String,
+
+    @SerializedName("rain_sum")
+    val rainSum: String,
+
+    @SerializedName("windspeed_10m_max")
+    val windspeed10MMax: String
 )
 
 data class Hourly (
@@ -79,6 +92,7 @@ data class Hourly (
     @SerializedName("apparent_temperature")
     val apparentTemperature: List<Double>,
 
+    val showers: List<Double>,
     val weathercode: List<Long>
 )
 
@@ -94,5 +108,6 @@ data class HourlyUnits (
     @SerializedName("apparent_temperature")
     val apparentTemperature: String,
 
+    val showers: String,
     val weathercode: String
 )
