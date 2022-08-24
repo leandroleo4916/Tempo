@@ -72,8 +72,8 @@ class MainActivity : AppCompatActivity() {
                 when (result) {
                     is ResultRequest.Success -> {
                         result.dado?.let { res ->
-                            addElementViewTime(res)
-                            getData(res)
+                            addElementViewMain(res)
+                            setElementRecycler(res)
                         }
                     }
                     is ResultRequest.Error -> {
@@ -87,19 +87,19 @@ class MainActivity : AppCompatActivity() {
         }
     }
 
-    private fun addElementViewTime(res: WeatherDataClass) {
+    private fun addElementViewMain(weather: WeatherDataClass) {
 
         binding.run {
             progressMain.visibility = View.GONE
-            val fell = res.hourly.apparentTemperature[0]
+            val fell = weather.hourly.apparentTemperature[0]
             var fellUnit = fell.toInt()
-            val time = res.currentWeather.temperature
+            val time = weather.currentWeather.temperature
             var timeUnit = time.toInt()
-            val max = res.daily.temperature2MMax[0]
+            val max = weather.daily.temperature2MMax[0]
             var maxUnit = max.toInt()
-            val min = res.daily.temperature2MMin[0]
+            val min = weather.daily.temperature2MMin[0]
             var minUnit = min.toInt()
-            val code = WeatherType.weatherCode(res.currentWeather.weathercode.toInt())
+            val code = WeatherType.weatherCode(weather.currentWeather.weathercode.toInt())
 
             if (fell > fellUnit+0.5) fellUnit += 1
             if (time > timeUnit+0.5) timeUnit += 1
@@ -109,7 +109,7 @@ class MainActivity : AppCompatActivity() {
             "$city - $uf".also { textviewCidade.text = it }
             code.weatherDesc.also { textviewCeu.text = it }
             "$dateDay - $hour".also { textviewDate.text = it }
-            "Humidade ${res.hourly.relativehumidity2M[0]}%".also { textviewHumidity.text = it }
+            "Humidade ${weather.hourly.relativehumidity2M[0]}%".also { textviewHumidity.text = it }
             ("Sessação térmica de ${fellUnit}º").also { textviewTermica.text = it }
             "$timeUnit".also { textViewTemperatura.text = it }
             ("$maxUnit"+"º/"+"${minUnit}º").also { textviewMaxmin.text = it }
@@ -141,7 +141,7 @@ class MainActivity : AppCompatActivity() {
         observer()
     }
 
-    private fun getData(weather: WeatherDataClass){
+    private fun setElementRecycler(weather: WeatherDataClass){
         val divHourInit = divHour(hour)
         var position = divHourInit
 
