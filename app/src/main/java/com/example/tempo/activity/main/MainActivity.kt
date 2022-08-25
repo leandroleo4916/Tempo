@@ -10,6 +10,7 @@ import androidx.recyclerview.widget.RecyclerView
 import com.example.tempo.activity.ShowToast
 import com.example.tempo.activity.search.SearchActivity
 import com.example.tempo.adapter.MainAdapter
+import com.example.tempo.adapter.SevenDaysAdapter
 import com.example.tempo.constants.ConstantsCities
 import com.example.tempo.databinding.ActivityMainBinding
 import com.example.tempo.dataclass.TimeDataClass
@@ -28,6 +29,7 @@ class MainActivity : AppCompatActivity() {
     private val showToast: ShowToast by inject()
     private val captureDateCurrent = CaptureDateCurrent()
     private lateinit var adapter: MainAdapter
+    private lateinit var adapterSevenDays: SevenDaysAdapter
     private lateinit var id: String
     private lateinit var city: String
     private lateinit var uf: String
@@ -64,6 +66,11 @@ class MainActivity : AppCompatActivity() {
         adapter = MainAdapter()
         recycler.layoutManager = LinearLayoutManager(this, RecyclerView.HORIZONTAL, false)
         recycler.adapter = adapter
+
+        val recyclerSevenDays = binding.recyclerSevenDays
+        adapterSevenDays = SevenDaysAdapter()
+        recyclerSevenDays.layoutManager = LinearLayoutManager(this)
+        recyclerSevenDays.adapter = adapterSevenDays
     }
 
     private fun observer() {
@@ -130,21 +137,13 @@ class MainActivity : AppCompatActivity() {
 
     private fun addElementTimeSevenDays(weather: WeatherDataClass) {
 
-        binding.run {
-            (weather.daily.temperature2MMax[0].toInt().toString()+"º/"+
-                    weather.daily.temperature2MMin[0].toInt().toString()+"º").also { textToday.text = it }
-            (weather.daily.temperature2MMax[1].toInt().toString()+"º/"+
-                    weather.daily.temperature2MMin[1].toInt().toString()+"º").also { textTomorrow.text = it }
-            (weather.daily.temperature2MMax[2].toInt().toString()+"º/"+
-                    weather.daily.temperature2MMin[2].toInt().toString()+"º").also { textDay3.text = it }
-            (weather.daily.temperature2MMax[3].toInt().toString()+"º/"+
-                    weather.daily.temperature2MMin[3].toInt().toString()+"º").also { textDay4.text = it }
-            (weather.daily.temperature2MMax[4].toInt().toString()+"º/"+
-                    weather.daily.temperature2MMin[4].toInt().toString()+"º").also { textDay5.text = it }
-            (weather.daily.temperature2MMax[5].toInt().toString()+"º/"+
-                    weather.daily.temperature2MMin[5].toInt().toString()+"º").also { textDay6.text = it }
-            (weather.daily.temperature2MMax[6].toInt().toString()+"º/"+
-                    weather.daily.temperature2MMin[6].toInt().toString()+"º").also { textDay7.text = it }
+        var position = 10
+        for (i in 0..6){
+            val codeDay = WeatherType.weatherCode(weather.hourly.weathercode[position].toInt())
+            val codeNight = WeatherType.weatherCode(weather.hourly.weathercode[position+10].toInt())
+            val maxAndMin = weather.daily.temperature2MMax[i].toInt().toString()+"º/"+
+                            weather.daily.temperature2MMin[i].toInt().toString()+"º"
+            position += 24
         }
     }
 
