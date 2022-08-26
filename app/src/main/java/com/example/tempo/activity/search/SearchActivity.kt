@@ -180,6 +180,7 @@ class SearchActivity : AppCompatActivity(), OnItemClickRecycler, OnClickItemHist
     @SuppressLint("MissingPermission")
     private fun getPosition(){
 
+        var cont = 0
         val client = LocationServices.getFusedLocationProviderClient(this)
         client.lastLocation
             .addOnSuccessListener { location ->
@@ -189,7 +190,9 @@ class SearchActivity : AppCompatActivity(), OnItemClickRecycler, OnClickItemHist
                     getAddress()
                 }
                 else {
-                    getPosition()
+                    cont += 1
+                    if (cont <= 3) getPosition()
+                    else toastMessage("Não foi possível obter sua localização!")
                 }
             }
             .addOnFailureListener {
