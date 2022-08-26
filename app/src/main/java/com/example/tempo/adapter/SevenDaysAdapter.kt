@@ -6,26 +6,25 @@ import android.view.View
 import android.view.ViewGroup
 import android.widget.ImageView
 import android.widget.TextView
-import android.widget.Toolbar
 import androidx.recyclerview.widget.RecyclerView
 import com.example.tempo.R
-import com.example.tempo.dataclass.TimeDataClass
+import com.example.tempo.dataclass.SevenDaysDataClass
 
 class SevenDaysAdapter: RecyclerView.Adapter<SevenDaysAdapter.SevenDaysViewHolder>() {
 
-    private var data = ArrayList<TimeDataClass>()
+    private var data = ArrayList<SevenDaysDataClass>()
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): SevenDaysViewHolder {
         val item = LayoutInflater
             .from(parent.context)
-            .inflate(R.layout.recycler_tempo, parent, false)
+            .inflate(R.layout.recycler_seven_days, parent, false)
 
         return SevenDaysViewHolder(item)
     }
 
     override fun onBindViewHolder(holder: SevenDaysViewHolder, position: Int) {
         val time = data[position]
-        holder.bind(time, position)
+        holder.bind(time)
     }
 
     override fun getItemCount() = data.size
@@ -41,22 +40,21 @@ class SevenDaysAdapter: RecyclerView.Adapter<SevenDaysAdapter.SevenDaysViewHolde
         }
 
         @SuppressLint("UseCompatLoadingForDrawables")
-        fun bind(weather: TimeDataClass, position: Int){
+        fun bind(weather: SevenDaysDataClass){
             itemView.run {
-                findViewById<TextView>(R.id.text_time).text = weather.time
-                val image = findViewById<ImageView>(R.id.image_icon_time)
-                image.setImageResource(weather.icon)
-                findViewById<TextView>(R.id.text_temperature).text = weather.temperature
-                findViewById<TextView>(R.id.text_humidity).text = weather.humidity+"%"
-                if (position == 23) {
-                    findViewById<Toolbar>(R.id.toolbar_div).visibility = View.GONE
-                }
+                findViewById<TextView>(R.id.text_today_right).text = weather.dayWeek
+                findViewById<TextView>(R.id.text_today_humidity).text = weather.humidity
+                val iconDay = findViewById<ImageView>(R.id.icon_day_time)
+                val iconNight = findViewById<ImageView>(R.id.icon_night_time)
+                iconDay.setImageResource(weather.iconDay)
+                iconNight.setImageResource(weather.iconNight)
+                findViewById<TextView>(R.id.text_max_min).text = weather.maxMin
             }
         }
     }
 
     @SuppressLint("NotifyDataSetChanged")
-    fun updateWeatherSevenDays(weather: ArrayList<TimeDataClass>) {
+    fun updateWeatherSevenDays(weather: ArrayList<SevenDaysDataClass>) {
         data = weather
         notifyDataSetChanged()
     }

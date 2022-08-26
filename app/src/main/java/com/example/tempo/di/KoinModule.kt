@@ -9,6 +9,7 @@ import com.example.tempo.repository.RepositoryCities
 import com.example.tempo.repository.RepositoryHistory
 import com.example.tempo.repository.WeatherRepository
 import com.example.tempo.security.SecurityPreferences
+import com.example.tempo.utils.CaptureDateCurrent
 import okhttp3.OkHttpClient
 import okhttp3.logging.HttpLoggingInterceptor
 import org.koin.androidx.viewmodel.dsl.viewModel
@@ -44,8 +45,9 @@ val weatherViewModel = module { viewModel { WeatherViewModel(get()) } }
 val historyViewModel = module { viewModel { SearchViewModel(get()) } }
 val dataBase = module { single { DataBaseHistory(get()) } }
 val showToast = module { factory { ShowToast() } }
+val captureDate = module { factory { CaptureDateCurrent() } }
 
 val appModules = listOf(
-    retrofitModule, securityPreferences, weatherRepository, showToast,
+    retrofitModule, securityPreferences, weatherRepository, showToast, captureDate,
     weatherViewModel, cityRepository, dataBase, repositoryHistory, historyViewModel
 )

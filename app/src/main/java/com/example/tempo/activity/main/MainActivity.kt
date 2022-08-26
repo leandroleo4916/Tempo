@@ -13,6 +13,7 @@ import com.example.tempo.adapter.MainAdapter
 import com.example.tempo.adapter.SevenDaysAdapter
 import com.example.tempo.constants.ConstantsCities
 import com.example.tempo.databinding.ActivityMainBinding
+import com.example.tempo.dataclass.SevenDaysDataClass
 import com.example.tempo.dataclass.TimeDataClass
 import com.example.tempo.repository.ResultRequest
 import com.example.tempo.repository.WeatherType
@@ -27,7 +28,7 @@ class MainActivity : AppCompatActivity() {
     private val securityPreferences: SecurityPreferences by inject()
     private val weatherViewModel: WeatherViewModel by viewModel()
     private val showToast: ShowToast by inject()
-    private val captureDateCurrent = CaptureDateCurrent()
+    private val captureDateCurrent: CaptureDateCurrent by inject()
     private lateinit var adapter: MainAdapter
     private lateinit var adapterSevenDays: SevenDaysAdapter
     private lateinit var id: String
@@ -36,8 +37,9 @@ class MainActivity : AppCompatActivity() {
     private lateinit var latitude: String
     private lateinit var longitude: String
     private val data = ArrayList<TimeDataClass>()
+    private val dataSevenDays = ArrayList<SevenDaysDataClass>()
     private val dateDay = captureDateCurrent.captureDateDay()
-    private val hour = captureDateCurrent.captureHoraCurrent()
+    private val hourDay = captureDateCurrent.captureHoraCurrent()
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -51,6 +53,14 @@ class MainActivity : AppCompatActivity() {
             observer()
             listener()
         }
+    }
+
+    override fun onRestart() {
+        super.onRestart()
+        data.clear()
+        dataSevenDays.clear()
+        searchCity()
+        observer()
     }
 
     private fun searchCity(){
@@ -99,7 +109,7 @@ class MainActivity : AppCompatActivity() {
 
         binding.run {
             progressMain.visibility = View.GONE
-            val position = divHour(hour)
+            val position = divHour(hourDay)
             val fell = weather.hourly.apparentTemperature[position]
             var fellUnit = fell.toInt()
             val time = weather.currentWeather.temperature
@@ -117,7 +127,7 @@ class MainActivity : AppCompatActivity() {
 
             "$city - $uf".also { textviewCidade.text = it }
             code.weatherDesc.also { textviewCeu.text = it }
-            "$dateDay - $hour".also { textviewDate.text = it }
+            "$dateDay - $hourDay".also { textviewDate.text = it }
             "Humidade ${weather.hourly.relativehumidity2M[position]}%".also { textviewHumidity.text = it }
             ("Sessação térmica de ${fellUnit}º").also { textviewTermica.text = it }
             "$timeUnit".also { textViewTemperatura.text = it }
@@ -137,14 +147,27 @@ class MainActivity : AppCompatActivity() {
 
     private fun addElementTimeSevenDays(weather: WeatherDataClass) {
 
+        var date = captureDateCurrent.captureDateCurrent()
+        var dateValue = "Hoje"
         var position = 10
         for (i in 0..6){
+            if (i != 0){
+                dateValue = captureDateCurrent.getDayOfWeek(date)
+                date = captureDateCurrent.captureNextDate(date)
+            }
+            else {
+                dateValue = captureDateCurrent.getDayOfWeek(date)
+                date = captureDateCurrent.captureNextDate(date)
+            }
+            val humidity = weather.hourly.relativehumidity2M[position].toString()+"%"
             val codeDay = WeatherType.weatherCode(weather.hourly.weathercode[position].toInt())
             val codeNight = WeatherType.weatherCode(weather.hourly.weathercode[position+10].toInt())
             val maxAndMin = weather.daily.temperature2MMax[i].toInt().toString()+"º/"+
                             weather.daily.temperature2MMin[i].toInt().toString()+"º"
+            dataSevenDays.add(SevenDaysDataClass(dateValue, humidity, codeDay.iconRes, codeNight.iconRes, maxAndMin))
             position += 24
         }
+        adapterSevenDays.updateWeatherSevenDays(dataSevenDays)
     }
 
     private fun listener(){
@@ -155,15 +178,8 @@ class MainActivity : AppCompatActivity() {
         startActivity(Intent(this, SearchActivity::class.java))
     }
 
-    override fun onRestart() {
-        super.onRestart()
-        data.clear()
-        searchCity()
-        observer()
-    }
-
     private fun addElementRecycler(weather: WeatherDataClass){
-        val divHourInit = divHour(hour)
+        val divHourInit = divHour(hourDay)
         var position = divHourInit
 
         for (i in 1..24){
@@ -182,5 +198,17 @@ class MainActivity : AppCompatActivity() {
     private fun divHour(hour: String): Int{
         val res = hour.split(":")
         return res[0].toInt()
+    }
+
+    private fun converterDayWeek(day: String): String {
+        return when (day) {
+            "seg." -> "Segunda"
+            "ter." -> "Terça"
+            "qua." -> "Quarta"
+            "qui." -> "Quinta"
+            "sex." -> "Sexta"
+            "sab." -> "Sábado"
+            else -> "Domingo"
+        }
     }
 }

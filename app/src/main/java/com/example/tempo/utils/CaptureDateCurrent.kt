@@ -2,33 +2,39 @@ package com.example.tempo.utils
 
 import android.icu.util.Calendar
 import java.text.SimpleDateFormat
+import java.time.DayOfWeek
+import java.time.format.DateTimeFormatter
+import java.time.format.TextStyle
 import java.util.*
 
 class CaptureDateCurrent {
 
     private val local = Locale("pt", "BR")
+    private val calendar = Calendar.getInstance().time
     private val dateString = SimpleDateFormat("dd/MM/yyyy", local)
     private val dateDay = SimpleDateFormat("EEE, d MMM yyyy", local)
     private val hora = SimpleDateFormat("HH:mm", local)
     private val horaSecond = SimpleDateFormat("HH:mm:ss", local)
 
+    fun getDayOfWeek(data: String): String {
+        val parser: DateTimeFormatter = DateTimeFormatter.ofPattern("dd/MM/uuuu")
+        val day: DayOfWeek = DayOfWeek.from(parser.parse(data))
+        return day.getDisplayName(TextStyle.FULL, local)
+    }
+
     fun captureDateCurrent(): String {
-        val calendar = Calendar.getInstance().time
         return dateString.format(calendar)
     }
 
     fun captureDateDay(): String {
-        val calendar = Calendar.getInstance().time
         return dateDay.format(calendar)
     }
 
     fun captureHoraCurrent(): String {
-        val calendar = Calendar.getInstance().time
         return hora.format(calendar)
     }
 
     fun captureHoraCurrentSecond(): String {
-        val calendar = Calendar.getInstance().time
         return horaSecond.format(calendar)
     }
 
