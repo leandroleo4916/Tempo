@@ -36,7 +36,7 @@ class MainActivity : AppCompatActivity() {
     private lateinit var uf: String
     private lateinit var latitude: String
     private lateinit var longitude: String
-    private val data = ArrayList<TimeDataClass>()
+    private val dataOfDay = ArrayList<TimeDataClass>()
     private val dataSevenDays = ArrayList<SevenDaysDataClass>()
     private val dateDay = captureDateCurrent.captureDateDay()
     private val hourDay = captureDateCurrent.captureHoraCurrent()
@@ -57,7 +57,8 @@ class MainActivity : AppCompatActivity() {
 
     override fun onRestart() {
         super.onRestart()
-        data.clear()
+        binding.progressMain.visibility = View.VISIBLE
+        dataOfDay.clear()
         dataSevenDays.clear()
         searchCity()
         observer()
@@ -125,7 +126,7 @@ class MainActivity : AppCompatActivity() {
             if (max > maxUnit+0.5) maxUnit += 1
             if (min > minUnit+0.5) minUnit += 1
 
-            "$city - $uf".also { textviewCidade.text = it }
+            "$city - $uf".also { textviewCity.text = it }
             code.weatherDesc.also { textviewCeu.text = it }
             "$dateDay - $hourDay".also { textviewDate.text = it }
             "Humidade ${weather.hourly.relativehumidity2M[position]}%".also { textviewHumidity.text = it }
@@ -134,7 +135,8 @@ class MainActivity : AppCompatActivity() {
             ("$maxUnit"+"º/"+"${minUnit}º").also { textviewMaxmin.text = it }
 
             progressMain.visibility = View.GONE
-            textviewCidade.visibility = View.VISIBLE
+            textviewCity.visibility = View.VISIBLE
+            imageLocationGps.visibility = View.VISIBLE
             textviewDate.visibility = View.VISIBLE
             textViewTemperatura.visibility = View.VISIBLE
             textCelsius.visibility = View.VISIBLE
@@ -142,13 +144,14 @@ class MainActivity : AppCompatActivity() {
             textviewMaxmin.visibility = View.VISIBLE
             textviewTermica.visibility = View.VISIBLE
             textviewHumidity.visibility = View.VISIBLE
+            textAfterDays.visibility = View.VISIBLE
         }
     }
 
     private fun addElementTimeSevenDays(weather: WeatherDataClass) {
 
         var date = captureDateCurrent.captureDateCurrent()
-        var dateValue = "Hoje"
+        var dateValue = "hoje"
         var position = 10
         for (i in 0..6){
             if (i != 0){
@@ -156,7 +159,6 @@ class MainActivity : AppCompatActivity() {
                 date = captureDateCurrent.captureNextDate(date)
             }
             else {
-                dateValue = captureDateCurrent.getDayOfWeek(date)
                 date = captureDateCurrent.captureNextDate(date)
             }
             val humidity = weather.hourly.relativehumidity2M[position].toString()+"%"
@@ -179,9 +181,9 @@ class MainActivity : AppCompatActivity() {
     }
 
     private fun addElementRecycler(weather: WeatherDataClass){
+
         val divHourInit = divHour(hourDay)
         var position = divHourInit
-
         for (i in 1..24){
             val temp = weather.hourly.temperature2M[position]
             var temperature = temp.toInt()
@@ -190,25 +192,13 @@ class MainActivity : AppCompatActivity() {
             val rain = weather.hourly.relativehumidity2M[position].toString()
             val code = WeatherType.weatherCode(weather.currentWeather.weathercode.toInt())
             position += 1
-            data.add(TimeDataClass(time[1], temperature.toString(), code.iconRes, rain))
+            dataOfDay.add(TimeDataClass(time[1], temperature.toString(), code.iconRes, rain))
         }
-        adapter.updateWeatherPerHour(data)
+        adapter.updateWeatherPerHour(dataOfDay)
     }
 
     private fun divHour(hour: String): Int{
         val res = hour.split(":")
         return res[0].toInt()
-    }
-
-    private fun converterDayWeek(day: String): String {
-        return when (day) {
-            "seg." -> "Segunda"
-            "ter." -> "Terça"
-            "qua." -> "Quarta"
-            "qui." -> "Quinta"
-            "sex." -> "Sexta"
-            "sab." -> "Sábado"
-            else -> "Domingo"
-        }
     }
 }

@@ -61,6 +61,7 @@ class SearchActivity : AppCompatActivity(), OnItemClickRecycler, OnClickItemHist
         super.onCreate(savedInstanceState)
         setContentView(binding.root)
 
+        client = LocationServices.getFusedLocationProviderClient(this)
         locationManager = this.getSystemService(Context.LOCATION_SERVICE) as LocationManager
         gpsActive = locationManager.isProviderEnabled(LocationManager.GPS_PROVIDER)
 
@@ -75,9 +76,7 @@ class SearchActivity : AppCompatActivity(), OnItemClickRecycler, OnClickItemHist
 
     override fun onRestart() {
         super.onRestart()
-        val locationManager: LocationManager =
-            this.getSystemService(Context.LOCATION_SERVICE) as LocationManager
-        val gpsActive = locationManager.isProviderEnabled(LocationManager.GPS_PROVIDER)
+        gpsActive = locationManager.isProviderEnabled(LocationManager.GPS_PROVIDER)
         if (gpsActive) getPosition()
         else toastMessage("Gps não ativado!")
     }
@@ -181,15 +180,17 @@ class SearchActivity : AppCompatActivity(), OnItemClickRecycler, OnClickItemHist
     @SuppressLint("MissingPermission")
     private fun getPosition(){
 
-        client = LocationServices.getFusedLocationProviderClient(this)
+        val client = LocationServices.getFusedLocationProviderClient(this)
         client.lastLocation
-            .addOnSuccessListener {
-                if (it != null){
-                    latitude = it.latitude
-                    longitude = it.longitude
+            .addOnSuccessListener { location ->
+                if (location != null){
+                    latitude = location.latitude
+                    longitude = location.longitude
                     getAddress()
                 }
-                else toastMessage("Não foi possível obter sua localização!")
+                else {
+                    getPosition()
+                }
             }
             .addOnFailureListener {
                 toastMessage("Não foi possível obter sua localização!")

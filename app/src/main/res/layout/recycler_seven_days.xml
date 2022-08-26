@@ -10,9 +10,9 @@
 
     <TextView
         android:id="@+id/text_today_right"
-        android:layout_width="95dp"
+        android:layout_width="90dp"
         android:layout_height="wrap_content"
-        android:layout_marginStart="12dp"
+        android:layout_marginStart="6dp"
         android:text="Hoje"
         android:singleLine="true"
         android:textColor="@color/white"
@@ -70,7 +70,7 @@
         android:id="@+id/text_max_min"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_marginEnd="12dp"
+        android:layout_marginEnd="6dp"
         android:text="23º/12º"
         android:textColor="@color/white"
         android:textSize="18sp"
