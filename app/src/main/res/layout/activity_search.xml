@@ -23,9 +23,11 @@
         android:id="@+id/textView_history_here"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
+        android:layout_marginStart="40dp"
+        android:layout_marginEnd="40dp"
         android:layout_marginTop="40dp"
         android:gravity="center"
-        android:text="Seu histórico fica aqui!"
+        android:text="Adicione sua localização ou pesquise sua cidade!"
         android:textColor="@color/white"
         android:textSize="22sp"
         app:layout_constraintEnd_toEndOf="parent"
@@ -65,13 +67,13 @@
         android:id="@+id/bottom_location"
         android:layout_width="match_parent"
         android:layout_height="55dp"
+        android:layout_marginStart="30dp"
         android:layout_marginTop="8dp"
-        android:textSize="18sp"
+        android:layout_marginEnd="30dp"
         android:backgroundTint="@color/black"
         android:text="Adicione sua localização"
         android:textColor="@color/white"
-        android:layout_marginEnd="30dp"
-        android:layout_marginStart="30dp"
+        android:textSize="18sp"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/editText_search" />
@@ -87,5 +89,17 @@
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/editText_search"
         tools:listitem="@layout/recycler_cidades" />
+
+    <com.wang.avi.AVLoadingIndicatorView
+        android:id="@+id/progress_search"
+        android:layout_width="40dp"
+        android:layout_height="40dp"
+        android:visibility="invisible"
+        app:indicatorColor="@color/white"
+        app:indicatorName="BallPulseIndicator"
+        app:layout_constraintBottom_toTopOf="@+id/recycler_history"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/editText_search" />
 
 </androidx.constraintlayout.widget.ConstraintLayout>

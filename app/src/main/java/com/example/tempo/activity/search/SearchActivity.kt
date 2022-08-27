@@ -14,11 +14,11 @@ import android.provider.Settings
 import android.text.Editable
 import android.text.TextWatcher
 import android.view.View
-import android.widget.Toast
 import androidx.appcompat.app.AlertDialog
 import androidx.appcompat.app.AppCompatActivity
 import androidx.core.app.ActivityCompat
 import androidx.recyclerview.widget.LinearLayoutManager
+import com.example.tempo.activity.ShowToast
 import com.example.tempo.adapter.AdapterHistory
 import com.example.tempo.adapter.CitiesAdapter
 import com.example.tempo.databinding.ActivitySearchBinding
@@ -48,6 +48,7 @@ class SearchActivity : AppCompatActivity(), OnItemClickRecycler, OnClickItemHist
     private lateinit var adapterCities: CitiesAdapter
     private lateinit var adapterHistory: AdapterHistory
     private val viewModelSearch: SearchViewModel by viewModel()
+    private val showToast: ShowToast by inject()
     private lateinit var client: FusedLocationProviderClient
     private lateinit var locationManager: LocationManager
     private val permissionCode = 1000
@@ -76,9 +77,19 @@ class SearchActivity : AppCompatActivity(), OnItemClickRecycler, OnClickItemHist
 
     override fun onRestart() {
         super.onRestart()
+        binding.run {
+            bottomLocation.visibility = View.INVISIBLE
+            progressSearch.visibility = View.VISIBLE
+        }
         gpsActive = locationManager.isProviderEnabled(LocationManager.GPS_PROVIDER)
         if (gpsActive) getPosition()
-        else toastMessage("Gps não ativado!")
+        else {
+            showToast.message("Gps não ativado!", this)
+            binding.run {
+                bottomLocation.visibility = View.VISIBLE
+                progressSearch.visibility = View.INVISIBLE
+            }
+        }
     }
 
     private fun recyclerCities() {
@@ -192,11 +203,11 @@ class SearchActivity : AppCompatActivity(), OnItemClickRecycler, OnClickItemHist
                 else {
                     cont += 1
                     if (cont <= 3) getPosition()
-                    else toastMessage("Não foi possível obter sua localização!")
+                    else showToast.message("Não foi possível obter sua localização!",this)
                 }
             }
             .addOnFailureListener {
-                toastMessage("Não foi possível obter sua localização!")
+                showToast.message("Não foi possível obter sua localização!",this)
             }
     }
 
@@ -219,7 +230,7 @@ class SearchActivity : AppCompatActivity(), OnItemClickRecycler, OnClickItemHist
             permissionCode -> {
                 if (grantResults.isNotEmpty() && grantResults[0]
                     == PackageManager.PERMISSION_GRANTED) checkGpsActive()
-                else toastMessage("Permissão negada!")
+                else showToast.message("Permissão negada!", this)
             }
         }
     }
@@ -240,7 +251,7 @@ class SearchActivity : AppCompatActivity(), OnItemClickRecycler, OnClickItemHist
                 latitude.toString(), longitude.toString()))
 
         } catch (e: Exception) {
-            toastMessage("Não conseguimos obter o endereço!")
+            showToast.message("Não conseguimos obter o endereço!",this)
         }
     }
 
@@ -280,7 +291,7 @@ class SearchActivity : AppCompatActivity(), OnItemClickRecycler, OnClickItemHist
             DialogInterface.OnClickListener { _, which ->
                 when (which) {
                     DialogInterface.BUTTON_NEGATIVE -> {
-                        toastMessage("GPS não foi ativado!")
+                        showToast.message("GPS não foi ativado!", this)
                     }
                 }
             }
@@ -300,10 +311,6 @@ class SearchActivity : AppCompatActivity(), OnItemClickRecycler, OnClickItemHist
         viewModelSearch.deleteHistory(item.id)
         adapterHistory.updateRemoveItem(position)
         observerHistory()
-    }
-
-    private fun toastMessage(message: String){
-        Toast.makeText(this, message, Toast.LENGTH_SHORT).show()
     }
 
 }

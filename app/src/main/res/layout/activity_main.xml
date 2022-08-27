@@ -21,15 +21,16 @@
             android:layout_height="wrap_content"
             android:layout_marginBottom="40dp">
 
-            <ProgressBar
+            <com.wang.avi.AVLoadingIndicatorView
                 android:id="@+id/progress_main"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                app:layout_constraintBottom_toTopOf="@+id/toolbar_tempo_por_hora"
+                android:layout_width="40dp"
+                android:layout_height="40dp"
+                app:indicatorColor="@color/white"
+                app:indicatorName="BallPulseIndicator"
+                app:layout_constraintBottom_toTopOf="@+id/toolbar_time_per_nour"
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintTop_toTopOf="parent"
-                tools:ignore="MissingConstraints" />
+                app:layout_constraintTop_toTopOf="parent" />
 
             <TextView
                 android:id="@+id/textview_city"
@@ -61,8 +62,8 @@
 
             <ImageView
                 android:id="@+id/image_add_localization"
-                android:layout_width="30dp"
-                android:layout_height="30dp"
+                android:layout_width="32dp"
+                android:layout_height="32dp"
                 android:layout_marginTop="20dp"
                 android:layout_marginEnd="30dp"
                 android:foregroundGravity="center"
@@ -174,7 +175,7 @@
                 tools:ignore="MissingConstraints" />
 
             <androidx.constraintlayout.widget.ConstraintLayout
-                android:id="@+id/toolbar_tempo_por_hora"
+                android:id="@+id/toolbar_time_per_nour"
                 android:layout_width="match_parent"
                 android:layout_height="132dp"
                 android:layout_marginStart="14dp"
@@ -192,10 +193,10 @@
                     android:layout_marginBottom="6dp"
                     android:layout_marginTop="6dp"
                     android:layout_marginEnd="4dp"
-                    app:layout_constraintBottom_toBottomOf="@+id/toolbar_tempo_por_hora"
-                    app:layout_constraintEnd_toEndOf="@+id/toolbar_tempo_por_hora"
-                    app:layout_constraintStart_toStartOf="@+id/toolbar_tempo_por_hora"
-                    app:layout_constraintTop_toTopOf="@+id/toolbar_tempo_por_hora"
+                    app:layout_constraintBottom_toBottomOf="@+id/toolbar_time_per_nour"
+                    app:layout_constraintEnd_toEndOf="@+id/toolbar_time_per_nour"
+                    app:layout_constraintStart_toStartOf="@+id/toolbar_time_per_nour"
+                    app:layout_constraintTop_toTopOf="@+id/toolbar_time_per_nour"
                     tools:listitem="@layout/recycler_tempo" />
 
             </androidx.constraintlayout.widget.ConstraintLayout>
@@ -210,7 +211,7 @@
                 android:background="@drawable/background"
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintTop_toBottomOf="@+id/toolbar_tempo_por_hora" >
+                app:layout_constraintTop_toBottomOf="@+id/toolbar_time_per_nour" >
 
                 <TextView
                     android:id="@+id/text_after_days"
@@ -218,10 +219,10 @@
                     android:layout_height="wrap_content"
                     android:layout_marginTop="12dp"
                     android:layout_marginStart="15dp"
-                    android:visibility="invisible"
                     android:text="Próximos 7 Dias"
                     android:textColor="@color/white"
                     android:textSize="20sp"
+                    android:visibility="gone"
                     app:layout_constraintStart_toStartOf="parent"
                     app:layout_constraintTop_toTopOf="parent" />
 
@@ -233,6 +234,7 @@
                     android:layout_marginStart="15dp"
                     android:layout_marginEnd="15dp"
                     android:background="@color/gray"
+                    android:visibility="invisible"
                     app:layout_constraintEnd_toEndOf="parent"
                     app:layout_constraintStart_toStartOf="parent"
                     app:layout_constraintTop_toBottomOf="@+id/text_after_days" />
@@ -271,6 +273,7 @@
                     android:text="Mais"
                     android:textColor="@color/white"
                     android:textSize="20sp"
+                    android:visibility="gone"
                     app:layout_constraintStart_toStartOf="@+id/toolbar1"
                     app:layout_constraintTop_toTopOf="parent" />
 
@@ -282,6 +285,7 @@
                     android:layout_marginTop="10dp"
                     android:layout_marginEnd="30dp"
                     android:background="@color/gray"
+                    android:visibility="invisible"
                     app:layout_constraintEnd_toEndOf="parent"
                     app:layout_constraintStart_toStartOf="parent"
                     app:layout_constraintTop_toBottomOf="@+id/text_more" />
@@ -294,6 +298,7 @@
                     android:text="Nascer do sol"
                     android:textColor="@color/white"
                     android:textSize="18sp"
+                    android:visibility="gone"
                     app:layout_constraintStart_toStartOf="@+id/toolbar1"
                     app:layout_constraintTop_toBottomOf="@+id/toolbar1" />
 
@@ -305,6 +310,7 @@
                     android:text="06:00"
                     android:textColor="@color/white"
                     android:textSize="18sp"
+                    android:visibility="gone"
                     app:layout_constraintEnd_toEndOf="@+id/toolbar1"
                     app:layout_constraintTop_toBottomOf="@+id/toolbar1" />
 
@@ -316,6 +322,7 @@
                     android:layout_marginTop="12dp"
                     android:layout_marginEnd="30dp"
                     android:background="@color/gray"
+                    android:visibility="invisible"
                     app:layout_constraintEnd_toEndOf="parent"
                     app:layout_constraintStart_toStartOf="parent"
                     app:layout_constraintTop_toBottomOf="@+id/text_nascer" />
@@ -328,6 +335,7 @@
                     android:text="Pôr do sol"
                     android:textColor="@color/white"
                     android:textSize="18sp"
+                    android:visibility="gone"
                     app:layout_constraintStart_toStartOf="@+id/toolbar2"
                     app:layout_constraintTop_toBottomOf="@+id/toolbar2" />
 
@@ -339,6 +347,7 @@
                     android:text="18:00"
                     android:textColor="@color/white"
                     android:textSize="18sp"
+                    android:visibility="gone"
                     app:layout_constraintEnd_toEndOf="@+id/toolbar2"
                     app:layout_constraintTop_toBottomOf="@+id/toolbar2" />
 
@@ -350,6 +359,7 @@
                     android:layout_marginTop="10dp"
                     android:layout_marginEnd="30dp"
                     android:background="@color/gray"
+                    android:visibility="invisible"
                     app:layout_constraintEnd_toEndOf="parent"
                     app:layout_constraintStart_toStartOf="parent"
                     app:layout_constraintTop_toBottomOf="@+id/text_por" />
@@ -362,6 +372,7 @@
                     android:text="Vento"
                     android:textColor="@color/white"
                     android:textSize="18sp"
+                    android:visibility="gone"
                     app:layout_constraintStart_toStartOf="@+id/toolbar3"
                     app:layout_constraintTop_toBottomOf="@+id/toolbar3" />
 
@@ -373,6 +384,7 @@
                     android:text="5.5 Km/h"
                     android:textColor="@color/white"
                     android:textSize="18sp"
+                    android:visibility="gone"
                     app:layout_constraintEnd_toEndOf="@+id/toolbar3"
                     app:layout_constraintTop_toBottomOf="@+id/toolbar3" />
 
@@ -384,6 +396,7 @@
                     android:layout_marginTop="10dp"
                     android:layout_marginEnd="30dp"
                     android:background="@color/gray"
+                    android:visibility="invisible"
                     app:layout_constraintEnd_toEndOf="parent"
                     app:layout_constraintStart_toStartOf="parent"
                     app:layout_constraintTop_toBottomOf="@+id/text_wind" />
@@ -397,6 +410,7 @@
                     android:text="Volume de chuva"
                     android:textColor="@color/white"
                     android:textSize="18sp"
+                    android:visibility="gone"
                     app:layout_constraintBottom_toBottomOf="parent"
                     app:layout_constraintStart_toStartOf="@+id/toolbar3"
                     app:layout_constraintTop_toBottomOf="@+id/toolbar4" />
@@ -409,6 +423,7 @@
                     android:text="2.2 mm"
                     android:textColor="@color/white"
                     android:textSize="18sp"
+                    android:visibility="gone"
                     app:layout_constraintEnd_toEndOf="@+id/toolbar3"
                     app:layout_constraintTop_toBottomOf="@+id/toolbar4" />
 
@@ -427,12 +442,12 @@
                     android:id="@+id/text_open_meteo"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:layout_marginEnd="15dp"
+                    android:layout_marginStart="15dp"
                     android:text="api-open-meteo"
                     android:textColor="@color/white"
                     android:textSize="16sp"
                     app:layout_constraintBottom_toBottomOf="parent"
-                    app:layout_constraintEnd_toEndOf="parent"
+                    app:layout_constraintStart_toStartOf="parent"
                     app:layout_constraintTop_toTopOf="parent" />
 
             </androidx.constraintlayout.widget.ConstraintLayout>

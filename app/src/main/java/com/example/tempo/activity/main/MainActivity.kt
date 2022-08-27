@@ -63,7 +63,9 @@ class MainActivity : AppCompatActivity() {
         dataOfDay.clear()
         dataSevenDays.clear()
         searchCity()
+        recycler()
         observer()
+        listener()
     }
 
     private fun searchCity(){
@@ -147,12 +149,15 @@ class MainActivity : AppCompatActivity() {
             textviewMaxmin.visibility = View.VISIBLE
             textviewTermica.visibility = View.VISIBLE
             textviewHumidity.visibility = View.VISIBLE
-            textAfterDays.visibility = View.VISIBLE
         }
     }
 
     private fun addElementTimeSevenDays(weather: WeatherDataClass) {
 
+        binding.run {
+            textAfterDays.visibility = View.VISIBLE
+            toolbarSeven.visibility = View.VISIBLE
+        }
         var date = captureDateCurrent.captureDateCurrent()
         var dateValue = "hoje"
         var position = 10
@@ -209,6 +214,20 @@ class MainActivity : AppCompatActivity() {
 
     private fun addElementMore(weather: WeatherDataClass){
         binding.run {
+            textMore.visibility = View.VISIBLE
+            toolbar1.visibility = View.VISIBLE
+            textNascer.visibility = View.VISIBLE
+            textNascerRight.visibility = View.VISIBLE
+            toolbar2.visibility = View.VISIBLE
+            textPor.visibility = View.VISIBLE
+            textPorRight.visibility = View.VISIBLE
+            toolbar3.visibility = View.VISIBLE
+            textWind.visibility = View.VISIBLE
+            textWindRight.visibility = View.VISIBLE
+            toolbar4.visibility = View.VISIBLE
+            textVolume.visibility = View.VISIBLE
+            textVolumeRight.visibility = View.VISIBLE
+
             val sunrise = weather.daily.sunrise[0].split("T")
             textNascerRight.text = sunrise[1]
             val sunset = weather.daily.sunset[0].split("T")
