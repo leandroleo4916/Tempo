@@ -2,6 +2,7 @@ package com.example.tempo.activity.main
 
 import WeatherDataClass
 import android.content.Intent
+import android.net.Uri
 import android.os.Bundle
 import android.view.View
 import androidx.appcompat.app.AppCompatActivity
@@ -21,6 +22,7 @@ import com.example.tempo.security.SecurityPreferences
 import com.example.tempo.utils.CaptureDateCurrent
 import org.koin.android.ext.android.inject
 import org.koin.androidx.viewmodel.ext.android.viewModel
+
 
 class MainActivity : AppCompatActivity() {
 
@@ -93,13 +95,14 @@ class MainActivity : AppCompatActivity() {
                             addElementViewMain(weather)
                             addElementRecycler(weather)
                             addElementTimeSevenDays(weather)
+                            addElementMore(weather)
                         }
                     }
                     is ResultRequest.Error -> {
-                        result.exception.message?.let { it1 -> showToast.toastMessage(it1, this) }
+                        result.exception.message?.let { it -> showToast.message(it, this) }
                     }
                     is ResultRequest.ErrorConnection -> {
-                        result.exception.message?.let { it1 -> showToast.toastMessage(it1, this) }
+                        result.exception.message?.let { it -> showToast.message(it, this) }
                     }
                 }
             }
@@ -173,7 +176,14 @@ class MainActivity : AppCompatActivity() {
     }
 
     private fun listener(){
-        binding.imageAddLocalization.setOnClickListener { openActivity() }
+        binding.run {
+            imageAddLocalization.setOnClickListener { openActivity() }
+            textOpenMeteo.setOnClickListener {
+                val browserIntent =
+                    Intent(Intent.ACTION_VIEW, Uri.parse("https://open-meteo.com/"))
+                startActivity(browserIntent)
+            }
+        }
     }
 
     private fun openActivity(){
@@ -195,6 +205,17 @@ class MainActivity : AppCompatActivity() {
             dataOfDay.add(TimeDataClass(time[1], temperature.toString(), code.iconRes, rain))
         }
         adapter.updateWeatherPerHour(dataOfDay)
+    }
+
+    private fun addElementMore(weather: WeatherDataClass){
+        binding.run {
+            val sunrise = weather.daily.sunrise[0].split("T")
+            textNascerRight.text = sunrise[1]
+            val sunset = weather.daily.sunset[0].split("T")
+            textPorRight.text = sunset[1]
+            textWindRight.text = weather.daily.windspeed10MMax[0].toString()+" Km/h"
+            textVolumeRight.text = weather.daily.rainSum[0].toString()+" mm"
+        }
     }
 
     private fun divHour(hour: String): Int{
