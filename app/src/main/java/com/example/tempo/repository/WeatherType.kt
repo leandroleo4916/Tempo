@@ -3,114 +3,142 @@ package com.example.tempo.repository
 import androidx.annotation.DrawableRes
 import com.example.tempo.R
 
-sealed class WeatherType(val weatherDesc: String, @DrawableRes val iconRes: Int) {
+sealed class WeatherType(val weatherDesc: String, @DrawableRes val iconRes: Int,
+                         @DrawableRes val iconTime: Int) {
     object ClearSky : WeatherType(
         weatherDesc = "Céu limpo",
-        iconRes = R.drawable.ic_sunny
+        iconRes = R.drawable.ic_sunny,
+        iconTime = R.drawable.ceu_limpo
     )
     object MainlyClear : WeatherType(
         weatherDesc = "Principalmente nublado",
-        iconRes = R.drawable.ic_cloudy
+        iconRes = R.drawable.ic_cloudy,
+        iconTime = R.drawable.ceu_parcial_nublado
     )
     object PartlyCloudy : WeatherType(
         weatherDesc = "Parcialmente nublado",
-        iconRes = R.drawable.ic_cloudy
+        iconRes = R.drawable.ic_cloudy,
+        iconTime = R.drawable.ceu_parcial_nublado
     )
     object Overcast : WeatherType(
         weatherDesc = "Nublado",
-        iconRes = R.drawable.ic_cloudy
+        iconRes = R.drawable.ic_cloudy,
+        iconTime = R.drawable.ceu_nublado
     )
     object Foggy : WeatherType(
         weatherDesc = "Neblina",
-        iconRes = R.drawable.ic_very_cloudy
+        iconRes = R.drawable.ic_very_cloudy,
+        iconTime = R.drawable.ceu_parcial_nublado
     )
     object DepositingRimeFog : WeatherType(
         weatherDesc = "Nevoeiro",
-        iconRes = R.drawable.ic_very_cloudy
+        iconRes = R.drawable.ic_very_cloudy,
+        iconTime = R.drawable.ceu_parcial_nublado
     )
     object LightDrizzle : WeatherType(
         weatherDesc = "Chuvisco leve",
-        iconRes = R.drawable.ic_rainshower
+        iconRes = R.drawable.ic_rainshower,
+        iconTime = R.drawable.ceu_chuvoso
     )
     object ModerateDrizzle : WeatherType(
         weatherDesc = "Chuvisco moderado",
-        iconRes = R.drawable.ic_rainshower
+        iconRes = R.drawable.ic_rainshower,
+        iconTime = R.drawable.ceu_chuvoso
     )
     object DenseDrizzle : WeatherType(
         weatherDesc = "Chuvisco denso",
-        iconRes = R.drawable.ic_rainshower
+        iconRes = R.drawable.ic_rainshower,
+        iconTime = R.drawable.ceu_chuvoso
     )
     object LightFreezingDrizzle : WeatherType(
         weatherDesc = "Garoa leve",
-        iconRes = R.drawable.ic_snowyrainy
+        iconRes = R.drawable.ic_snowyrainy,
+        iconTime = R.drawable.ceu_chuvoso
     )
     object DenseFreezingDrizzle : WeatherType(
         weatherDesc = "Garoa densa",
-        iconRes = R.drawable.ic_snowyrainy
+        iconRes = R.drawable.ic_snowyrainy,
+        iconTime = R.drawable.ceu_chuvoso
     )
     object SlightRain : WeatherType(
         weatherDesc = "Chuva leve",
-        iconRes = R.drawable.ic_rainy
+        iconRes = R.drawable.ic_rainy,
+        iconTime = R.drawable.ceu_chuvoso
     )
     object ModerateRain : WeatherType(
         weatherDesc = "Chuva moderada",
-        iconRes = R.drawable.ic_rainy
+        iconRes = R.drawable.ic_rainy,
+        iconTime = R.drawable.ceu_chuvoso
     )
     object HeavyRain : WeatherType(
         weatherDesc = "Chuva forte",
-        iconRes = R.drawable.ic_rainy
+        iconRes = R.drawable.ic_rainy,
+        iconTime = R.drawable.ceu_chuvoso
     )
     object HeavyFreezingRain: WeatherType(
         weatherDesc = "Chuva congelante",
-        iconRes = R.drawable.ic_snowyrainy
+        iconRes = R.drawable.ic_snowyrainy,
+        iconTime = R.drawable.ceu_chuvoso
     )
     object SlightSnowFall: WeatherType(
         weatherDesc = "Ligeira queda de neve",
-        iconRes = R.drawable.ic_snowy
+        iconRes = R.drawable.ic_snowy,
+        iconTime = R.drawable.ceu_chuvoso
     )
     object ModerateSnowFall: WeatherType(
         weatherDesc = "Neve moderada",
-        iconRes = R.drawable.ic_heavysnow
+        iconRes = R.drawable.ic_heavysnow,
+        iconTime = R.drawable.ceu_chuvoso
     )
     object HeavySnowFall: WeatherType(
         weatherDesc = "Forte nevasca",
-        iconRes = R.drawable.ic_heavysnow
+        iconRes = R.drawable.ic_heavysnow,
+        iconTime = R.drawable.ceu_chuvoso
     )
     object SnowGrains: WeatherType(
         weatherDesc = "Grãos de neve",
-        iconRes = R.drawable.ic_heavysnow
+        iconRes = R.drawable.ic_heavysnow,
+        iconTime = R.drawable.ceu_chuvoso
     )
     object SlightRainShowers: WeatherType(
         weatherDesc = "Chuva leve",
-        iconRes = R.drawable.ic_rainshower
+        iconRes = R.drawable.ic_rainshower,
+        iconTime = R.drawable.ceu_chuvoso
     )
     object ModerateRainShowers: WeatherType(
         weatherDesc = "Pacadas moderadas de chuva",
-        iconRes = R.drawable.ic_rainshower
+        iconRes = R.drawable.ic_rainshower,
+        iconTime = R.drawable.ceu_chuvoso
     )
     object ViolentRainShowers: WeatherType(
         weatherDesc = "Pancadas fortes de chuva",
-        iconRes = R.drawable.ic_rainshower
+        iconRes = R.drawable.ic_rainshower,
+        iconTime = R.drawable.ceu_chuvoso
     )
     object SlightSnowShowers: WeatherType(
         weatherDesc = "Nevasca leve",
-        iconRes = R.drawable.ic_snowy
+        iconRes = R.drawable.ic_snowy,
+        iconTime = R.drawable.ceu_chuvoso
     )
     object HeavySnowShowers: WeatherType(
         weatherDesc = "Neve pesada",
-        iconRes = R.drawable.ic_snowy
+        iconRes = R.drawable.ic_snowy,
+        iconTime = R.drawable.ceu_chuvoso
     )
     object ModerateThunderstorm: WeatherType(
         weatherDesc = "Tempestade moderada",
-        iconRes = R.drawable.ic_thunder
+        iconRes = R.drawable.ic_thunder,
+        iconTime = R.drawable.ceu_chuvoso
     )
     object SlightHailThunderstorm: WeatherType(
         weatherDesc = "Trovoada com granizo",
-        iconRes = R.drawable.ic_rainythunder
+        iconRes = R.drawable.ic_rainythunder,
+        iconTime = R.drawable.ceu_chuvoso
     )
     object HeavyHailThunderstorm: WeatherType(
         weatherDesc = "Trovoada forte com granizo",
-        iconRes = R.drawable.ic_rainythunder
+        iconRes = R.drawable.ic_rainythunder,
+        iconTime = R.drawable.ceu_chuvoso
     )
 
     companion object {
